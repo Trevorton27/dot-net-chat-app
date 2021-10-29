@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router';
+import { Redirect } from 'react-router-dom';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -18,10 +18,10 @@ const Register = () => {
         password
       })
     });
-    setRedirect(true);
 
     const content = await response.json();
     console.log(content);
+    setRedirect(true);
   };
 
   if (redirect) {

@@ -42,5 +42,10 @@ namespace DotNetChatReactApp.Services
         {
             return _context.Users.FirstOrDefault(u => u.Id == id);
         }
+
+        public User SetIsLoggedIn(User user, bool isLoggedin)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

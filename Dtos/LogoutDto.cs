@@ -5,14 +5,11 @@ using System.Threading.Tasks;
 
 namespace DotNetChatReactApp.Dtos
 {
-    public class LoginDto
+    public class LogoutDto
     {
         public string Email { get; set; }
-        public string Password { get; set; }
+       
 
-      
-
-
-
+    
     }
 }

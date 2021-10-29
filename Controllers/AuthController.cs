@@ -2,6 +2,7 @@
 using DotNetChatReactApp.Dtos;
 using DotNetChatReactApp.Models;
 using DotNetChatReactApp.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -28,7 +29,8 @@ namespace DotNetChatReactApp.Controllers
             {
                 Name = dto.Name,
                 Email = dto.Email,
-                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+                Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
+              
 
             };
 
@@ -40,15 +42,20 @@ namespace DotNetChatReactApp.Controllers
         public IActionResult Login(LoginDto dto)
         {
             var user = _userService.GetByEmail(dto.Email);
-            if (user == null) return BadRequest(error: new { message = "Invalid Credentials" });
-            if (!BCrypt.Net.BCrypt.Verify(text: dto.Password, hash: user.Password))
+           
+            if (user == null) return BadRequest( new { message = "Invalid Credentials" });
+            if (!BCrypt.Net.BCrypt.Verify( dto.Password, user.Password))
             {
                 return BadRequest(error: new { message = "Invalid Credentials" });
             }
 
             var jwt = _jwtService.Generate(user.Id);
 
-            return Ok(jwt);
+            Response.Cookies.Append("jwt", jwt, new CookieOptions
+            {
+                HttpOnly = true
+            });
+            return Ok(user);
         }
 
         [HttpGet("user")]
@@ -61,6 +68,7 @@ namespace DotNetChatReactApp.Controllers
 
                 int userId = int.Parse(token.Issuer);
                 var user = _userService.GetById(userId);
+              
 
                 return Ok(user);
             }
@@ -80,6 +88,8 @@ namespace DotNetChatReactApp.Controllers
         [HttpPost("logout")]
         public IActionResult Logout()
         {
+        
+         
             Response.Cookies.Delete("jwt");
             return Ok(new
             {

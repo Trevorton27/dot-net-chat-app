@@ -1,33 +1,37 @@
 import React, { useState } from 'react';
-import { Redirect, useHistory } from 'react-router';
-import axios from 'axios';
-<Redirect to='/' />;
+import { Redirect } from 'react-router-dom';
 
-const Login = ({ isLoggedIn, setIsLoggedIn }) => {
+import axios from 'axios';
+
+const Login = ({ setName, name }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory();
-  const submit = async (e) => {
+  const [redirect, setRedirect] = useState(false);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    await axios
-      .post('api/login', {
+    const response = await fetch('api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
         email,
         password
       })
-      .then((res) => {
-        const response = res.data;
-        console.log('response: ', response);
-        localStorage.setItem('isAuthenticated', response);
-        const isAuthenticated = localStorage.getItem('isAuthenticated');
-        if (isAuthenticated) {
-          setIsLoggedIn(true);
-          history.push('/');
-        }
-      });
+    });
+    const content = await response.json();
+    console.log('content: ', content);
+    setName(content.name);
+    console.log('name: ', name);
+    setRedirect(true);
   };
 
+  if (redirect) {
+    return <Redirect to='/' />;
+  }
+
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={handleLogin}>
       <h1 className='h3 mb-3 fw-normal'>Please sign in</h1>
 
       <input

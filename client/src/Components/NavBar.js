@@ -2,29 +2,23 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Redirect, useHistory } from 'react-router';
 import axios from 'axios';
-import NavBarLoggedOut from './NavBarLoggedOut';
-import NavBarLoggedIn from './NavBarLoggedIn';
+// import NavBarLoggedOut from './NavBarLoggedOut';
+// import NavBarLoggedIn from './NavBarLoggedIn';
 
-const Navbar = ({ isLoggedIn, setName, name, setIsLoggedIn }) => {
-  const history = useHistory();
-  const logout = () => {
-    localStorage.removeItem('isAuthenticated');
-    setIsLoggedIn(false);
-    history.push('/login');
+const Navbar = ({ name, setName }) => {
+  const logout = async () => {
+    await fetch('api/logout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
+    });
+
+    setName('');
   };
-  // const logout = async () => {
-  //   await fetch('http://localhost:8000/api/logout', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     credentials: 'include'
-  //   });
-
-  //   setName('');
-  // };
 
   let menu;
 
-  if (!isLoggedIn) {
+  if (name === '') {
     menu = (
       <ul className='navbar-nav me-auto mb-2 mb-md-0'>
         <li>
@@ -59,7 +53,7 @@ const Navbar = ({ isLoggedIn, setName, name, setIsLoggedIn }) => {
     <nav className='navbar navbar-expand-md navbar-dark bg-dark mb-4'>
       <div className='container-fluid'>
         <Link to='/' className='navbar-brand'>
-          Home
+          Chat
         </Link>
         <button
           className='navbar-toggler'
