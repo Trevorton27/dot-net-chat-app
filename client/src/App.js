@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
+import { BrowserRouter, Route } from 'react-router-dom';
 import Login from './Pages/Login';
 import './App.css';
 import Navbar from './Components/NavBar';
 import ChatPage from './Pages/ChatPage';
 import Register from './Pages/Register';
 import axios from 'axios';
-import AuthorizedRoute from './Components/AuthorizedRoute';
 
 function App() {
   const [name, setName] = useState('');
