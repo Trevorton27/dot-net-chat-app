@@ -21,7 +21,7 @@ const ChatPage = ({ isLoggedIn, name }) => {
           <SendMessageForm sendMessage={sendMessage} />
         </div>
       ) : (
-        'You are not authorized to view this page. Please register and login. '
+        'You are not authorized to view this page. Please register and/or login. '
       )}{' '}
     </div>
   );

@@ -39,7 +39,7 @@ namespace DotNetChatReactApp.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult Login(LoginDto dto)
+        public IActionResult Login([FromBody] LoginDto dto)
         {
             var user = _userService.GetByEmail(dto.Email);
            

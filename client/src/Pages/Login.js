@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 
 import axios from 'axios';
 
-const Login = ({ setName, name }) => {
+const Login = ({ setName, setIsLoggedIn }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [redirect, setRedirect] = useState(false);
@@ -21,9 +21,10 @@ const Login = ({ setName, name }) => {
     });
     const content = await response.json();
     console.log('content: ', content);
-    setName(content.name);
-    console.log('name: ', name);
     setRedirect(true);
+    setName(content.name);
+    setIsLoggedIn(true);
+    console.log('name: ', content.name);
   };
 
   if (redirect) {
