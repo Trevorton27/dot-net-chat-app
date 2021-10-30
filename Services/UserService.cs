@@ -43,9 +43,28 @@ namespace DotNetChatReactApp.Services
             return _context.Users.FirstOrDefault(u => u.Id == id);
         }
 
-        public User SetIsLoggedIn(User user, bool isLoggedin)
+        public bool IsAuthorized(string sessionToken)
         {
-            throw new NotImplementedException();
+            var user = FindUserBySessionToken(sessionToken);
+            if (user == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+
+        public User FindUserBySessionToken(string sessionToken)
+        {
+            var user = _context.Users
+                 .Where(u => u.SessionToken == sessionToken)
+                 .FirstOrDefault();
+
+            return user;
+
         }
     }
 }

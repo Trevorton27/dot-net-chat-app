@@ -14,6 +14,11 @@ namespace DotNetChatReactApp.Services
 
 
         User GetById(int id);
-      
+
+        public bool IsAuthorized(string sessionToken);
+
+        public User FindUserBySessionToken(string sessionToken);
+
+
     }
 }

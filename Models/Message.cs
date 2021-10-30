@@ -7,14 +7,13 @@ namespace DotNetChatReactApp.Models
 {
     public class Message
     {
-        public Guid Id { get; set; }
-        public string Text { get; set; }
-        public Guid ChannelId { get; set; }
-        public Guid UserId { get; set; }
-        public User User { get; set; }
-        public Channel Channel { get; set; }
+        public string Id {  get; set; }
 
+        public int UserId { get; set; }
+        public string Username { get; set; }
+        
+        public string Text { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+
     }
 }

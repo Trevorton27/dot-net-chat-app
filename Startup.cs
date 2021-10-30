@@ -39,6 +39,8 @@ namespace DotNetChatReactApp
             services.AddControllers();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<JwtService>();
+           //services.AddSwaggerGen();
+         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -74,6 +76,8 @@ namespace DotNetChatReactApp
                 spa.Options.SourcePath = "client";
                 if (env.IsDevelopment())
                 {
+                    //app.UseSwagger();
+                    //app.UseSwaggerUI();
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });

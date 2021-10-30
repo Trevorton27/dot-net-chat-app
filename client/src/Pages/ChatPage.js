@@ -11,7 +11,17 @@ const ChatPage = ({ isLoggedIn, name }) => {
   //   axios.get('api/users');
   // };
 
-  const sendMessage = () => {};
+  const sendMessage = async (message, name) => {
+    const response = await axios
+      .post('/api/message', {
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: { Username: name, Text: message }
+      })
+      .then((res) => {
+        console.log('response: ', response);
+      });
+  };
   return (
     <div>
       {name ? (

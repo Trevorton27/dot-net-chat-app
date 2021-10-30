@@ -25,17 +25,17 @@ namespace DotNetChatReactApp.Controllers
         [HttpPost("register")]
         public IActionResult Register(RegisterDto dto)
         {
+            var sessionToken = HttpContext.Request.Cookies["jwt"];
             var user = new User
             {
                 Name = dto.Name,
                 Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-              
+                SessionToken = sessionToken
+        };
 
-            };
 
-
-            return Created(uri: "Success bananas!", value: _userService.Create(user));
+            return Created( "Success bananas!",  _userService.Create(user));
         }
 
         [HttpPost("login")]
