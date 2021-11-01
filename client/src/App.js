@@ -14,6 +14,7 @@ function App() {
 
   useEffect(() => {
     getUser();
+    console.log('isLoggedIn: ', isLoggedIn);
   });
 
   const getUser = async () => {
@@ -35,20 +36,33 @@ function App() {
       <BrowserRouter>
         <Navbar name={name} setName={setName} />
         <main className='form-signin'>
-          <Route path='/' exact component={() => <ChatPage name={name} />} />
+          <Route
+            path='/'
+            exact
+            render={() =>
+              isLoggedIn ? <ChatPage name={name} /> : <Register />
+            }
+          />
 
           <Route
             path='/login'
-            component={() => (
-              <Login
-                setName={setName}
-                isLoggedIn={isLoggedIn}
-                setIsLoggedIn={setIsLoggedIn}
-              />
-            )}
+            render={() =>
+              isLoggedIn ? (
+                <Redirect to='/' />
+              ) : (
+                <Login
+                  setName={setName}
+                  isLoggedIn={isLoggedIn}
+                  setIsLoggedIn={setIsLoggedIn}
+                />
+              )
+            }
           />
 
-          <Route path='/register' component={Register} />
+          <Route
+            path='/register'
+            render={isLoggedIn ? <Redirect to='/' /> : <Register />}
+          />
         </main>
       </BrowserRouter>
     </div>

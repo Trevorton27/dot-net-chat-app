@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DotNetChatReactApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211030024910_updateTables")]
-    partial class updateTables
+    [Migration("20211101014713_tables")]
+    partial class tables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -31,9 +31,6 @@ namespace DotNetChatReactApp.Migrations
 
                     b.Property<string>("Text")
                         .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("Username")
                         .HasColumnType("text");
@@ -64,9 +61,6 @@ namespace DotNetChatReactApp.Migrations
 
                     b.Property<string>("Password")
                         .HasColumnType("text");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 

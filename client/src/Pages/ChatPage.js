@@ -28,7 +28,7 @@ const ChatPage = ({ isLoggedIn, name }) => {
         <div className='chat'>
           Welcome to the chat page {name}.
           <MessageContainer messages={messages} />
-          <SendMessageForm sendMessage={sendMessage} />
+          <SendMessageForm name={name} sendMessage={sendMessage} />
         </div>
       ) : (
         'You are not authorized to view this page. Please register and/or login. '

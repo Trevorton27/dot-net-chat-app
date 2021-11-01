@@ -1,32 +1,31 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import axios from 'axios';
 
 const Register = () => {
+  const history = useHistory();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [redirect, setRedirect] = useState(false);
+  const [toLogin, setToLogin] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await fetch('api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+
+    try {
+      const response = await axios.post('api/register', {
         name,
         email,
         password
-      })
-    });
+      });
 
-    const content = await response.json();
-    console.log(content);
-    setRedirect(true);
+      const content = await response.data;
+      console.log(content);
+      history.push('/login');
+    } catch (error) {
+      console.log('error: ', error);
+    }
   };
-
-  if (redirect) {
-    return <Redirect to='/login' />;
-  }
 
   return (
     <form onSubmit={handleSubmit}>

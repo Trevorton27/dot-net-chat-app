@@ -24,6 +24,7 @@ const Login = ({ setName, setIsLoggedIn }) => {
     setRedirect(true);
     setName(content.name);
     setIsLoggedIn(true);
+
     console.log('name: ', content.name);
   };
 

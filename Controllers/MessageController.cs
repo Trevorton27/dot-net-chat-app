@@ -40,16 +40,17 @@ namespace DotNetChatReactApp.Controllers
         {
 
             var sessionToken = HttpContext.Request.Cookies["jwt"];
+       
             if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
             try
             {
 
-                var user = _userService.FindUserBySessionToken(sessionToken);
+               var user = _userService.GetByEmail(messageDto.Email);
 
                 var message = new Message
                 {
                     Text = messageDto.Text,
-                    Username = messageDto.Username,
+                    Username = messageDto.Name,
 
                 };
                 _context.Messages.Add(message);
