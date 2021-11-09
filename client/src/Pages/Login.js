@@ -1,36 +1,41 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import axios from 'axios';
 
-const Login = ({ setName, setIsLoggedIn }) => {
+const Login = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [redirect, setRedirect] = useState(false);
 
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   const response = await fetch('api/login', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     credentials: 'include',
+  //     body: JSON.stringify({
+  //       email,
+  //       password
+  //     })
+  //   });
+  // };
+
+  const history = useHistory();
   const handleLogin = async (e) => {
     e.preventDefault();
-    const response = await fetch('api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
+    try {
+      const response = await axios.post('api/login', {
         email,
         password
-      })
-    });
-    const content = await response.json();
-    console.log('content: ', content);
-    setRedirect(true);
-    setName(content.name);
-    setIsLoggedIn(true);
+      });
+      setIsLoggedIn(true);
+      console.log('response: ', response);
 
-    console.log('name: ', content.name);
+      history.push('/');
+    } catch (error) {
+      console.log(error.response.data);
+    }
   };
-
-  if (redirect) {
-    return <Redirect to='/' />;
-  }
 
   return (
     <form onSubmit={handleLogin}>

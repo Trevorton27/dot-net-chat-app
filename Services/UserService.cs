@@ -48,11 +48,6 @@ namespace DotNetChatReactApp.Services
             return _context.Users.FirstOrDefault(u => u.Id == id);
         }
 
-        public bool IsAuthorized(string sessionToken)
-        {
-            throw new NotImplementedException();
-        }
-
         //public bool IsAuthorized(string sessionToken)
         //{
         //    var user = FindUserBySessionToken(sessionToken);
@@ -66,11 +61,6 @@ namespace DotNetChatReactApp.Services
         //    }
         //}
 
-        //public User InsertSessionToken(string sessionToken, int id)
-        //{
-        //    return _context.Users.Where(u => u.Id == id).Add(sessionToken);
-        //}
-
 
         //public User FindUserBySessionToken(string sessionToken)
         //{
@@ -81,5 +71,7 @@ namespace DotNetChatReactApp.Services
         //    return user;
 
         //}
+
+        
     }
 }

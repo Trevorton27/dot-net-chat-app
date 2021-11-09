@@ -1,8 +1,10 @@
+using AutoMapper;
 using DotNetChatReactApp.Auth;
 using DotNetChatReactApp.Data;
 using DotNetChatReactApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -37,9 +39,15 @@ namespace DotNetChatReactApp
             services.AddDbContext<DataContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString")));
             services.AddControllers();
+            services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<JwtService>();
-           //services.AddSwaggerGen();
+            services.AddSwaggerDocument(settings =>
+            {
+                settings.Title = "ChatApp";
+            });
          
         }
 
@@ -62,7 +70,9 @@ namespace DotNetChatReactApp
           );
 
             app.UseAuthorization();
+            app.UseOpenApi();
 
+            app.UseSwaggerUi3();
             app.UseSpaStaticFiles();
 
             app.UseEndpoints(endpoints =>
@@ -76,8 +86,7 @@ namespace DotNetChatReactApp
                 spa.Options.SourcePath = "client";
                 if (env.IsDevelopment())
                 {
-                    //app.UseSwagger();
-                    //app.UseSwaggerUI();
+              
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });

@@ -28,7 +28,7 @@ namespace DotNetChatReactApp.Controllers
         
             var user = new User
             {
-                Name = dto.Name,
+                Username = dto.Username,
                 Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
             
@@ -43,15 +43,15 @@ namespace DotNetChatReactApp.Controllers
         {
             var user = _userService.GetByEmail(dto.Email);
            
-            if (user == null) return BadRequest( new { message = "Invalid Credentials" });
+            if (user == null) return BadRequest( new { message = "User doesn't exist" });
             if (!BCrypt.Net.BCrypt.Verify( dto.Password, user.Password))
             {
-                return BadRequest(error: new { message = "Invalid Credentials" });
+                return BadRequest(error: new { message = "Wrong password" });
             }
 
             var jwt = _jwtService.Generate(user.Id);
 
-            Response.Cookies.Append("jwt", jwt, new CookieOptions
+            Response.Cookies.Append("token", jwt, new CookieOptions
             {
                 HttpOnly = true
             });
@@ -63,7 +63,7 @@ namespace DotNetChatReactApp.Controllers
         {
             try
             {
-                var jwt = Request.Cookies["jwt"];
+                var jwt = Request.Cookies["token"];
                 var token = _jwtService.Verify(jwt);
 
                 int userId = int.Parse(token.Issuer);
@@ -90,7 +90,7 @@ namespace DotNetChatReactApp.Controllers
         {
         
          
-            Response.Cookies.Delete("jwt");
+            Response.Cookies.Delete("token");
             return Ok(new
             {
                 message = "Successfully logged out."

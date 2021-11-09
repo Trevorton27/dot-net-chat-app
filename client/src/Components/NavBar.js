@@ -1,24 +1,26 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Redirect, useHistory } from 'react-router';
+import { Link, useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import axios from 'axios';
 // import NavBarLoggedOut from './NavBarLoggedOut';
 // import NavBarLoggedIn from './NavBarLoggedIn';
 
-const Navbar = ({ name, setName }) => {
+const Navbar = ({ userName, setUserName, setIsLoggedIn }) => {
+  const history = useHistory();
   const logout = async () => {
     await fetch('api/logout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
     });
-
-    setName('');
+    setIsLoggedIn(false);
+    setUserName('');
+    history.push('/login');
   };
 
   let menu;
 
-  if (name === '') {
+  if (userName === '') {
     menu = (
       <ul className='navbar-nav me-auto mb-2 mb-md-0'>
         <li>

@@ -1,14 +1,14 @@
 import { Form, Button, FormControl, InputGroup } from 'react-bootstrap';
 import { useState } from 'react';
 
-const SendMessageForm = ({ sendMessage, name }) => {
+const SendMessageForm = ({ sendMessage, userName, userId }) => {
   const [message, setMessage] = useState('');
 
   return (
     <Form
       onSubmit={(e) => {
         e.preventDefault();
-        sendMessage(message, name);
+        sendMessage(message, userName, userId);
         setMessage('');
       }}
     >

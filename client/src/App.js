@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
-import { Redirect } from 'react-router';
+import {
+  BrowserRouter as Router,
+  Route,
+  Redirect,
+  Switch
+} from 'react-router-dom';
+//import {  Redirect } from 'react-router';
 import Login from './Pages/Login';
 import './App.css';
 import Navbar from './Components/NavBar';
@@ -9,7 +14,8 @@ import Register from './Pages/Register';
 import axios from 'axios';
 
 function App() {
-  const [name, setName] = useState('');
+  const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
@@ -25,22 +31,34 @@ function App() {
     if (isLoggedIn) {
       const responseData = await response.data;
       console.log('data: ', responseData);
-      setName(responseData.name);
+      setUserName(responseData.username);
+      setUserId(responseData.id);
     } else {
-      return <Redirect to='/register' />;
     }
   };
 
   return (
     <div className='App'>
-      <BrowserRouter>
-        <Navbar name={name} setName={setName} />
+      <Router>
+        <Navbar
+          userName={userName}
+          setUserName={setUserName}
+          setIsLoggedIn={setIsLoggedIn}
+        />
         <main className='form-signin'>
           <Route
             path='/'
             exact
             render={() =>
-              isLoggedIn ? <ChatPage name={name} /> : <Register />
+              isLoggedIn ? (
+                <ChatPage
+                  userId={userId}
+                  userName={userName}
+                  isLoggedIn={isLoggedIn}
+                />
+              ) : (
+                <Register />
+              )
             }
           />
 
@@ -51,7 +69,7 @@ function App() {
                 <Redirect to='/' />
               ) : (
                 <Login
-                  setName={setName}
+                  setUserName={setUserName}
                   isLoggedIn={isLoggedIn}
                   setIsLoggedIn={setIsLoggedIn}
                 />
@@ -64,33 +82,9 @@ function App() {
             render={isLoggedIn ? <Redirect to='/' /> : <Register />}
           />
         </main>
-      </BrowserRouter>
+      </Router>
     </div>
   );
 }
 
 export default App;
-
-// <Route
-//           exact
-//           path='/'
-//           render={() => {
-//             isLoggedIn ? <ChatPage /> : <Register />;
-//           }}
-//         />
-//         <Route
-//           path='/register'
-//           render={() => {
-//             isLoggedIn ? <Redirect to='/' /> : <Register />;
-//           }}
-//         />
-//         <Route
-//           path='/login'
-//           render={() => {
-//             isLoggedIn ? (
-//               <Redirect to='/chatpage' />
-//             ) : (
-//               <Login setIsLoggedIn={setIsLoggedIn} />
-//             );
-//           }}
-//         />

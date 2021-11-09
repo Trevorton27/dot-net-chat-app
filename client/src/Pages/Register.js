@@ -3,18 +3,16 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 const Register = () => {
-  const history = useHistory();
-  const [name, setName] = useState('');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [toLogin, setToLogin] = useState(false);
-
+  const history = useHistory();
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await axios.post('api/register', {
-        name,
+        userName,
         email,
         password
       });
@@ -36,7 +34,7 @@ const Register = () => {
         className='form-control'
         placeholder='name'
         required
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => setUserName(e.target.value)}
       />
 
       <input
