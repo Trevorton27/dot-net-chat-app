@@ -15,7 +15,7 @@ namespace DotNetChatReactApp.Services
     {
         private readonly DataContext _context;
         private readonly User _user;
-        private readonly IMapper _mapper;
+
 
         public MessageService(DataContext context, IHttpContextAccessor httpContextAccessor, IMapper mapper)
         {
@@ -37,17 +37,26 @@ namespace DotNetChatReactApp.Services
   
 
 
-        public async Task<List<Message>> GetAllMessages(int userId)
+        public async Task<List<Message>> GetAllMessagesByUserId(int userId)
 
         {
             var messages = await _context.Messages.Where(c => c.UserId == userId).ToListAsync();
-            _mapper.Map<Message>(messages);
+        
             return messages;
         }
 
-   
 
-       
+        public async Task<List<Message>> GetAllMessages()
 
+        {
+            var messages = await _context.Messages.ToListAsync();
+    
+            return messages;
+        }
+
+        public Task<List<Message>> GetAllMessages(int userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

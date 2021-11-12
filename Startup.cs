@@ -1,13 +1,12 @@
 using AutoMapper;
 using DotNetChatReactApp.Auth;
 using DotNetChatReactApp.Data;
-using DotNetChatReactApp.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +16,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DotNetChatReactApp.Hubs;
+using DotNetChatReactApp.Services;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 
 namespace DotNetChatReactApp
 {
@@ -44,6 +46,7 @@ namespace DotNetChatReactApp
             services.AddScoped<IMessageService, MessageService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<JwtService>();
+            services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
             services.AddSwaggerDocument(settings =>
             {
                 settings.Title = "ChatApp";
@@ -78,6 +81,7 @@ namespace DotNetChatReactApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+               // endpoints.MapHub<ChatHub>("/chat");
             });
 
 

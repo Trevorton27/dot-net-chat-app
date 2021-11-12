@@ -7,19 +7,6 @@ const Login = ({ setIsLoggedIn }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  // const handleLogin = async (e) => {
-  //   e.preventDefault();
-  //   const response = await fetch('api/login', {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     credentials: 'include',
-  //     body: JSON.stringify({
-  //       email,
-  //       password
-  //     })
-  //   });
-  // };
-
   const history = useHistory();
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -1,7 +1,7 @@
 import { Form, Button, FormControl, InputGroup } from 'react-bootstrap';
 import { useState } from 'react';
 
-const SendMessageForm = ({ sendMessage, userName, userId }) => {
+const SendMessageForm = ({ sendMessage, userName, userId, jointChat }) => {
   const [message, setMessage] = useState('');
 
   return (
@@ -9,6 +9,7 @@ const SendMessageForm = ({ sendMessage, userName, userId }) => {
       onSubmit={(e) => {
         e.preventDefault();
         sendMessage(message, userName, userId);
+
         setMessage('');
       }}
     >

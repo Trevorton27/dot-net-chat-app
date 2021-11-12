@@ -30,7 +30,7 @@ function App() {
     });
     if (isLoggedIn) {
       const responseData = await response.data;
-      console.log('data: ', responseData);
+      console.log('userData: ', responseData);
       setUserName(responseData.username);
       setUserId(responseData.id);
     } else {

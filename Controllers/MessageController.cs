@@ -68,13 +68,16 @@ namespace DotNetChatReactApp.Controllers
         }
 
         [HttpGet("getallmessages")]
-        public async Task<IActionResult> GetMessages(NewMessageDto dto)
+        public async Task<IActionResult> GetMessages()
         {
-            var sessionToken = HttpContext.Request.Cookies["token"];
-            if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
-            int userId = _userService.GetById(dto.UserId == User.Id); 
-      
-            return Ok(await _messageService.GetAllMessages(userId));
+            //var sessionToken = HttpContext.Request.Cookies["token"];
+            //if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
+            //int userId = _userService.GetById(dto.UserId == User.Id);
+
+            var messages = await _messageService.GetAllMessages();
+            Console.WriteLine(messages);
+
+            return Ok(messages);
         }
 
 
