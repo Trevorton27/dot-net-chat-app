@@ -45,13 +45,15 @@ namespace DotNetChatReactApp
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSignalR();
+
             services.AddScoped<JwtService>();
-            services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
+
             services.AddSwaggerDocument(settings =>
             {
                 settings.Title = "ChatApp";
             });
-         
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,7 +83,7 @@ namespace DotNetChatReactApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-               // endpoints.MapHub<ChatHub>("/chat");
+                endpoints.MapHub<ChatHub>("/chat");
             });
 
 
@@ -90,7 +92,7 @@ namespace DotNetChatReactApp
                 spa.Options.SourcePath = "client";
                 if (env.IsDevelopment())
                 {
-              
+
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
             });

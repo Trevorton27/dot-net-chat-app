@@ -3,34 +3,21 @@ import SendMessageForm from '../Components/SendMessageForm';
 import MessageContainer from '../Components/MessageContainer';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
 //import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
 const ChatPage = ({ isLoggedIn, userName, userId }) => {
-  const [users, setUsers] = useState([]);
+  //const [users, setUsers] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [connection, setConnection] = useState();
-  const history = useHistory();
+  //const [connection, setConnection] = useState();
 
   // const getUsers = async () => {
   //   axios.get('api/users');
   // };
   useEffect(() => {
     getAllMessages();
-    history.push('/');
   }, []);
-
-  const getAllMessages = async () => {
-    try {
-      const response = await axios.get('/api/getallmessages', {
-        headers: { 'Content-Type': 'application/json' }
-      });
-
-      console.log('response from getAllMessages: ', response);
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
 
   const sendMessage = async (message, userName, userId) => {
     try {
@@ -39,7 +26,34 @@ const ChatPage = ({ isLoggedIn, userName, userId }) => {
         Text: message,
         UserId: userId
       });
-      console.log('response: ', response);
+      console.log('response: ', response.data);
+      getAllMessages();
+    } catch (error) {
+      console.log('error response: ', error.response.data);
+    }
+  };
+
+  const getAllMessages = async () => {
+    try {
+      const response = await axios.get('/api/getallmessages', {
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      console.log('response from getAllMessages: ', response);
+
+      const connection = new HubConnectionBuilder()
+        .withUrl('/chat')
+        .withAutomaticReconnect()
+        .build();
+
+      connection.on('ReceiveMessage', () => {
+        setMessages(response.data);
+      });
+      connection.onclose((e) => {
+        setMessages([]);
+      });
+
+      console.log('messages: ', messages);
     } catch (error) {
       console.log(error.response.data);
     }

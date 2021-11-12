@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 using DotNetChatReactApp.Data;
 using DotNetChatReactApp.Dtos;
 using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
+using DotNetChatReactApp.Hubs;
+using static DotNetChatReactApp.Hubs.ChatHub;
 
 namespace DotNetChatReactApp.Controllers
 {
@@ -18,8 +21,10 @@ namespace DotNetChatReactApp.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMessageService _messageService;
-
+   
         private readonly DataContext _context;
+
+
         public MessageController(IUserService userService, IMessageService messageService, DataContext context)
         {
 
@@ -55,6 +60,8 @@ namespace DotNetChatReactApp.Controllers
                     UserId = messageDto.UserId
 
                 };
+
+            
                 _context.Messages.Add(message);
                 await  _context.SaveChangesAsync();
 
