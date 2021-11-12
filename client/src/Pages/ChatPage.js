@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import SendMessageForm from '../Components/SendMessageForm';
 import MessageContainer from '../Components/MessageContainer';
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
-import { HubConnectionBuilder } from '@microsoft/signalr';
+// import { useHistory } from 'react-router-dom';
+// import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 
 //import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
 const ChatPage = ({ isLoggedIn, userName, userId }) => {
-  //const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
   const [messages, setMessages] = useState([]);
-  //const [connection, setConnection] = useState();
+  const [connection, setConnection] = useState();
 
   // const getUsers = async () => {
   //   axios.get('api/users');
@@ -40,18 +40,7 @@ const ChatPage = ({ isLoggedIn, userName, userId }) => {
       });
 
       console.log('response from getAllMessages: ', response);
-
-      const connection = new HubConnectionBuilder()
-        .withUrl('/chat')
-        .withAutomaticReconnect()
-        .build();
-
-      connection.on('ReceiveMessage', () => {
-        setMessages(response.data);
-      });
-      connection.onclose((e) => {
-        setMessages([]);
-      });
+      setMessages(response.data);
 
       console.log('messages: ', messages);
     } catch (error) {

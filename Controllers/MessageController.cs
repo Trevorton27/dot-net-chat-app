@@ -21,13 +21,14 @@ namespace DotNetChatReactApp.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMessageService _messageService;
-   
+
         private readonly DataContext _context;
 
+        //  private readonly IHubContext<ChatHub> _hubContext;
 
         public MessageController(IUserService userService, IMessageService messageService, DataContext context)
         {
-
+            // _hubContext = hubContext;
             _context = context;
             _userService = userService;
             _messageService = messageService;
@@ -46,12 +47,12 @@ namespace DotNetChatReactApp.Controllers
         {
 
             var sessionToken = HttpContext.Request.Cookies["token"];
-       
+
             if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
             try
             {
 
-               var user = _userService.GetById(messageDto.UserId);
+                var user = _userService.GetById(messageDto.UserId);
 
                 var message = new Message
                 {
@@ -61,9 +62,10 @@ namespace DotNetChatReactApp.Controllers
 
                 };
 
-            
+
                 _context.Messages.Add(message);
-                await  _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+                //   await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
 
                 return Ok(message);
             }
