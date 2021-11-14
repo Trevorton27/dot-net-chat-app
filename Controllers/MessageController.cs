@@ -24,11 +24,11 @@ namespace DotNetChatReactApp.Controllers
 
         private readonly DataContext _context;
 
-        //  private readonly IHubContext<ChatHub> _hubContext;
+        private readonly IHubContext<ChatHub, IChatHub> _hubContext;
 
-        public MessageController(IUserService userService, IMessageService messageService, DataContext context)
+        public MessageController(IUserService userService, IMessageService messageService, DataContext context, IHubContext<ChatHub, IChatHub> hubContext)
         {
-            // _hubContext = hubContext;
+            _hubContext = hubContext;
             _context = context;
             _userService = userService;
             _messageService = messageService;
@@ -65,9 +65,11 @@ namespace DotNetChatReactApp.Controllers
 
                 _context.Messages.Add(message);
                 await _context.SaveChangesAsync();
-                //   await _hubContext.Clients.All.SendAsync("ReceiveMessage", message);
+                await _hubContext.Clients.All.ReceiveMessage( message);
 
                 return Ok(message);
+
+          
             }
             catch (Exception ex)
             {

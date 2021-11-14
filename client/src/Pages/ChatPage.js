@@ -3,7 +3,7 @@ import SendMessageForm from '../Components/SendMessageForm';
 import MessageContainer from '../Components/MessageContainer';
 import axios from 'axios';
 // import { useHistory } from 'react-router-dom';
-// import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 
 //import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
@@ -15,6 +15,32 @@ const ChatPage = ({ isLoggedIn, userName, userId }) => {
   // const getUsers = async () => {
   //   axios.get('api/users');
   // };
+
+  useEffect(() => {
+    try {
+      const connection = new HubConnectionBuilder()
+        .withUrl('hubs/chat')
+        .withAutomaticReconnect()
+        .build();
+
+      connection.start().then(() => {
+        console.log('Connected!');
+        const newMessage = {
+          Username: userName,
+          Text: messages,
+          UserId: userId
+        };
+        connection.on('ReceiveMessage', (username, text) => {
+          const updateChat = [...messages];
+          updateChat.push(newMessage);
+          getAllMessages();
+        });
+      });
+    } catch (e) {
+      console.log('Connection failed: ', e);
+    }
+  }, []);
+
   useEffect(() => {
     getAllMessages();
   }, []);
