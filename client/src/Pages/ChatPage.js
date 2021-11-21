@@ -8,13 +8,7 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 //import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 
 const ChatPage = ({ isLoggedIn, userName, userId }) => {
-  const [users, setUsers] = useState([]);
   const [messages, setMessages] = useState([]);
-  const [connection, setConnection] = useState();
-
-  // const getUsers = async () => {
-  //   axios.get('api/users');
-  // };
 
   useEffect(() => {
     try {
