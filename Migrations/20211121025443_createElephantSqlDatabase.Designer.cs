@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DotNetChatReactApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211101014713_tables")]
-    partial class tables
+    [Migration("20211121025443_createElephantSqlDatabase")]
+    partial class createElephantSqlDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,14 +23,19 @@ namespace DotNetChatReactApp.Migrations
 
             modelBuilder.Entity("DotNetChatReactApp.Models.Message", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Text")
                         .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Username")
                         .HasColumnType("text");
@@ -56,10 +61,10 @@ namespace DotNetChatReactApp.Migrations
                     b.Property<DateTime>("LastActiveAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Password")
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Username")
                         .HasColumnType("text");
 
                     b.HasKey("Id");

@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DotNetChatReactApp.Migrations
 {
-    public partial class tables : Migration
+    public partial class createElephantSqlDatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,8 +12,10 @@ namespace DotNetChatReactApp.Migrations
                 name: "Messages",
                 columns: table => new
                 {
-                    Id = table.Column<string>(nullable: false),
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Username = table.Column<string>(nullable: true),
+                    UserId = table.Column<int>(nullable: false),
                     Text = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false)
                 },
@@ -28,7 +30,7 @@ namespace DotNetChatReactApp.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
+                    Username = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
                     CreatedDate = table.Column<DateTime>(nullable: false),

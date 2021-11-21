@@ -21,14 +21,19 @@ namespace DotNetChatReactApp.Migrations
 
             modelBuilder.Entity("DotNetChatReactApp.Models.Message", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Text")
                         .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Username")
                         .HasColumnType("text");
@@ -54,10 +59,10 @@ namespace DotNetChatReactApp.Migrations
                     b.Property<DateTime>("LastActiveAt")
                         .HasColumnType("timestamp without time zone");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Password")
                         .HasColumnType("text");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("Username")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
