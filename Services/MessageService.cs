@@ -17,11 +17,10 @@ namespace DotNetChatReactApp.Services
         private readonly User _user;
 
 
-        public MessageService(DataContext context, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        public MessageService(DataContext context)
         {
             _context = context;
-            _user = _context.Users
-                .First(u => u.Username == httpContextAccessor.HttpContext.User.Identity.Name);
+
         }
         public Message Create(Message message)
         {
@@ -30,18 +29,18 @@ namespace DotNetChatReactApp.Services
 
         }
 
-        
 
-      
 
-  
+
+
+
 
 
         public async Task<List<Message>> GetAllMessagesByUserId(int userId)
 
         {
             var messages = await _context.Messages.Where(c => c.UserId == userId).ToListAsync();
-        
+
             return messages;
         }
 
@@ -50,7 +49,7 @@ namespace DotNetChatReactApp.Services
 
         {
             var messages = await _context.Messages.ToListAsync();
-    
+
             return messages;
         }
 

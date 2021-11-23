@@ -63,13 +63,13 @@ namespace DotNetChatReactApp.Controllers
                 };
 
 
-                _context.Messages.Add(message);
+                _messageService.Create(message);
                 await _context.SaveChangesAsync();
-                await _hubContext.Clients.All.ReceiveMessage( message);
+                await _hubContext.Clients.All.ReceiveMessage(message);
 
                 return Ok(message);
 
-          
+
             }
             catch (Exception ex)
             {
