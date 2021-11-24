@@ -26,7 +26,7 @@ const Register = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className='form-signin'>
       <h1 className='h3 mb-3 fw-normal'>Please Register</h1>
 
       <input

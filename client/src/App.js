@@ -12,6 +12,7 @@ function App() {
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState('');
 
   useEffect(() => {
     getUser();
@@ -40,7 +41,7 @@ function App() {
           setUserName={setUserName}
           setIsLoggedIn={setIsLoggedIn}
         />
-        <main className='form-signin'>
+        <main>
           <Route
             path='/'
             exact
@@ -50,6 +51,8 @@ function App() {
                   userId={userId}
                   userName={userName}
                   isLoggedIn={isLoggedIn}
+                  channeld={selectedChannel}
+                  setSelectedChannel={setSelectedChannel}
                 />
               ) : (
                 <Register />

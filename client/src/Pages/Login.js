@@ -25,7 +25,7 @@ const Login = ({ setIsLoggedIn }) => {
   };
 
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleLogin} className='form-signin'>
       <h1 className='h3 mb-3 fw-normal'>Please sign in</h1>
 
       <input

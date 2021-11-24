@@ -13,11 +13,11 @@
   z-index: 2;
 }
 
-.form-signin input[type='email'] {
+/* .form-signin input[type='email'] {
   margin-bottom: -1px;
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-}
+} */
 
 .form-signin input[type='password'] {
   margin-bottom: 10px;
@@ -72,18 +72,36 @@ hr.line {
   margin-right: 4px;
 }
 
+.message-page-container {
+  width: 60%;
+  margin: auto;
+}
+.message bg-primary {
+  padding-right: 10px 13px 10px 13px;
+}
+
 .message-container {
   height: 400px;
+  width: 600px;
   background-color: black;
   overflow: auto;
   border-radius: 5px;
   margin-bottom: 2px;
 }
+.welcome-message {
+  text-align: center;
+  margin-bottom: 0.5em;
+}
+
+.channels-title {
+  text-align: center;
+}
 
 .user-message {
   text-align: right;
-  padding-right: 5px;
+  padding-right: 6px 8px 6px 8px;
   font-size: 14px;
+  margin-right: 1em;
 }
 
 .message {
@@ -93,7 +111,7 @@ hr.line {
   font-size: 14px;
   color: white;
   border-radius: 20px;
-  margin-top: 3px;
+  margin-top: 1em;
 }
 
 .from-user {

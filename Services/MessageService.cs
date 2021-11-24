@@ -22,9 +22,10 @@ namespace DotNetChatReactApp.Services
             _context = context;
 
         }
-        public Message Create(Message message)
+        public async Task<List<Message>> Create(Message message)
         {
             _context.Messages.Add(message);
+            await _context.SaveChangesAsync();
             return message;
 
         }

@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DotNetChatReactApp.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20211121025443_createElephantSqlDatabase")]
-    partial class createElephantSqlDatabase
+    [Migration("20211124034420_populateTables")]
+    partial class populateTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,12 +21,33 @@ namespace DotNetChatReactApp.Migrations
                 .HasAnnotation("ProductVersion", "3.1.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            modelBuilder.Entity("DotNetChatReactApp.Models.Channel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Channels");
+                });
+
             modelBuilder.Entity("DotNetChatReactApp.Models.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("ChannelId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -41,6 +62,8 @@ namespace DotNetChatReactApp.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ChannelId");
 
                     b.ToTable("Messages");
                 });
@@ -70,6 +93,15 @@ namespace DotNetChatReactApp.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("DotNetChatReactApp.Models.Message", b =>
+                {
+                    b.HasOne("DotNetChatReactApp.Models.Channel", "Channel")
+                        .WithMany()
+                        .HasForeignKey("ChannelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
