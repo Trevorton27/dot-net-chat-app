@@ -6,6 +6,7 @@ using DotNetChatReactApp.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,17 +19,14 @@ namespace DotNetChatReactApp.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMessageService _messageService;
-        private readonly IChannelService _channelService;
+
 
         private readonly DataContext _context;
 
-        private readonly IHubContext<ChatHub, IChatHub> _hubContext;
-        private readonly IChannelService   _channelService
 
-        public ChannelController(IUserService userService, IMessageService messageService, DataContext context, IHubContext<ChatHub, IChatHub> hubContext, IChannelService channnelService)
+        public ChannelController(IUserService userService, IMessageService messageService, DataContext context)
         {
-            _hubContext = hubContext;
-         _channnelService = channnelService;
+    
             _context = context;
             _userService = userService;
             _messageService = messageService;
@@ -43,8 +41,19 @@ namespace DotNetChatReactApp.Controllers
             if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
             try
             {
-                
-                _channelService.CreateNewChannel(channelDto);
+
+                var newChannel = new Channel
+                {
+                    Name = channelDto.Name,
+                    ChannelId = channelDto.ChannelId
+                };
+
+                _context.Channels.Add(newChannel);
+                await _context.SaveChangesAsync();
+
+
+
+                return Ok(newChannel);
 
             }
             catch (Exception ex)
@@ -54,11 +63,25 @@ namespace DotNetChatReactApp.Controllers
         }
 
         [HttpGet("getallchannels")]
-        public async Task<IActionResult>　GetChannels([])
+        public async Task<IActionResult> GetChannels()
         {
             var sessionToken = HttpContext.Request.Cookies["token"];
 
             if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
+            try
+            {
+
+                var channels = await _context.Channels.ToListAsync();
+                await _context.SaveChangesAsync();
+
+                return Ok(channels);
+
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = $"{ex.Message}" });
+            }
         }
 
     }

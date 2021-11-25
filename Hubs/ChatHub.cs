@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace DotNetChatReactApp.Hubs
 {
-    public class ChatHub : Hub<IChatHub>
+    public class ChatHub : Hub
     {
-  
+       
     }
 }

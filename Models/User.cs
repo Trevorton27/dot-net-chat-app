@@ -17,10 +17,5 @@ namespace DotNetChatReactApp.Models
 
         public DateTime LastActiveAt { get; set; }
 
-
-
-
-
-
     }
 }

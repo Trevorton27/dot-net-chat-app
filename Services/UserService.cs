@@ -33,10 +33,7 @@ namespace DotNetChatReactApp.Services
             throw new NotImplementedException();
         }
 
-        // public class GetAllUsers(User user)
-        // {
-        //     return _context.Users;
-        // }
+
 
         public User GetByEmail(string email)
         {
@@ -72,6 +69,6 @@ namespace DotNetChatReactApp.Services
 
         //}
 
-        
+
     }
 }

@@ -24,9 +24,9 @@ namespace DotNetChatReactApp.Controllers
 
         private readonly DataContext _context;
 
-        private readonly IHubContext<ChatHub, IChatHub> _hubContext;
+        private readonly IHubContext<ChatHub> _hubContext;
 
-        public MessageController(IUserService userService, IMessageService messageService, DataContext context, IHubContext<ChatHub, IChatHub> hubContext)
+        public MessageController(IUserService userService, IMessageService messageService, DataContext context, IHubContext<ChatHub> hubContext)
         {
             _hubContext = hubContext;
             _context = context;
@@ -35,12 +35,6 @@ namespace DotNetChatReactApp.Controllers
 
         }
 
-
-        //[HttpGet("getmessages")]
-        //public List<Message> GetMessages()
-        //{
-
-        //}
 
         [HttpPost("message")]
         public async Task<IActionResult> PostMessage([FromBody] NewMessageDto messageDto)
@@ -57,20 +51,34 @@ namespace DotNetChatReactApp.Controllers
                 var message = new Message
                 {
                     Text = messageDto.Text,
+               UserId = user.Id,
+                    ChannelId= messageDto.ChannelId,
                     Username = messageDto.Username,
-                    UserId = messageDto.UserId
+                    ChannelName = messageDto.ChannelName
+              
 
                 };
 
 
                 _messageService.Create(message);
                 await _context.SaveChangesAsync();
-                await _hubContext.Clients.All.ReceiveMessage(message);
 
-                return Ok(message);
+                var msgResponse = new MessageDTOResponse
+                {
+                    Id = message.Id,
+                    Text = message.Text,
+                    Username = message.User.Username,
+                    ChannelId = message.ChannelId,
+                    CreatedAt = message.CreatedAt
+                };
+
+                 await _hubContext.Clients.All.SendAsync("ReceiveMessage", msgResponse);
 
 
-            }
+                return CreatedAtAction("GetMessage", new { id = msgResponse.Id });
+
+
+            }  
             catch (Exception ex)
             {
                 return BadRequest(new { message = $"{ex.Message}" });
@@ -81,9 +89,8 @@ namespace DotNetChatReactApp.Controllers
         [HttpGet("getallmessages")]
         public async Task<IActionResult> GetMessages()
         {
-            //var sessionToken = HttpContext.Request.Cookies["token"];
-            //if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
-            //int userId = _userService.GetById(dto.UserId == User.Id);
+            var sessionToken = HttpContext.Request.Cookies["token"];
+            if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
 
             var messages = await _messageService.GetAllMessages();
             Console.WriteLine(messages);
