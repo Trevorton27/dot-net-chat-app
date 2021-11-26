@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace DotNetChatReactApp.Models
 {
     public class Channel
-    {
+    { public int Id {  get; set; }
         public int ChannelId { get; set; }
         public string Name { get; set; }
       

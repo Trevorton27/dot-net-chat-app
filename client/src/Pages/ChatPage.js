@@ -67,13 +67,20 @@ const ChatPage = ({
     getAllMessages();
   }, [getAllMessages]);
 
-  const sendMessage = async (message, userName, userId, channelId) => {
+  const sendMessage = async (
+    message,
+    userName,
+    userId,
+    channelId,
+    channelName
+  ) => {
     try {
       const response = await axios.post('/api/message', {
         Username: userName,
         Text: message,
         UserId: userId,
         ChannelId: channelId
+        // ChannelName:
       });
       console.log('response: ', response.data);
       getAllMessages();

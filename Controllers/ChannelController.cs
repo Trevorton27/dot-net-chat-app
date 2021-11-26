@@ -43,7 +43,7 @@ namespace DotNetChatReactApp.Controllers
             {
 
                 var newChannel = new Channel
-                {
+                {   Id= channelDto.Id,
                     Name = channelDto.Name,
                     ChannelId = channelDto.ChannelId
                 };
@@ -62,7 +62,7 @@ namespace DotNetChatReactApp.Controllers
             }
         }
 
-        [HttpGet("getallchannels")]
+        [HttpGet("channels")]
         public async Task<IActionResult> GetChannels()
         {
             var sessionToken = HttpContext.Request.Cookies["token"];

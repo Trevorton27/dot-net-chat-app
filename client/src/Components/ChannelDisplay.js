@@ -17,6 +17,7 @@ const ChannelDisplay = ({ setSelectedChannel }) => {
         const channels = response.data.channels;
         setChannels(channels);
         setSelectedChannel(channels[0].id);
+        console.log('channels: ', channels);
       })
       .catch((error) => {
         if (error.response.status === 401 || error.response.status === 422) {
