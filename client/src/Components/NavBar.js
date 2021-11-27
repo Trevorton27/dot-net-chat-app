@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { useNavigate } from 'react-router';
 import axios from 'axios';
 // import NavBarLoggedOut from './NavBarLoggedOut';
 // import NavBarLoggedIn from './NavBarLoggedIn';
@@ -8,10 +7,8 @@ import axios from 'axios';
 const Navbar = ({ userName, setUserName, setIsLoggedIn }) => {
   const history = useHistory();
   const logout = async () => {
-    await fetch('api/logout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include'
+    await axios.post('api/logout', {
+      headers: { 'Content-Type': 'application/json' }
     });
     setIsLoggedIn(false);
     setUserName('');
@@ -55,7 +52,7 @@ const Navbar = ({ userName, setUserName, setIsLoggedIn }) => {
     <nav className='navbar navbar-expand-md navbar-dark bg-dark mb-4'>
       <div className='container-fluid'>
         <Link to='/' className='navbar-brand'>
-          Chat
+          Chat App
         </Link>
         <button
           className='navbar-toggler'

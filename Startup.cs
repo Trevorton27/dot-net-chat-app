@@ -41,18 +41,19 @@ namespace DotNetChatReactApp
             services.AddDbContext<DataContext>(options =>
             options.UseNpgsql(Configuration.GetConnectionString("DefaultConnectionString")));
             services.AddControllers();
-            services.AddAutoMapper(typeof(Startup));
+            // services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IChannelService, ChannelService>();
             services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSignalR();
 
             services.AddScoped<JwtService>();
 
-            services.AddSwaggerDocument(settings =>
-            {
-                settings.Title = "ChatApp";
-            });
+            //services.AddSwaggerDocument(settings =>
+            //{
+            //    settings.Title = "ChatApp";
+            //});
 
         }
 
@@ -75,9 +76,9 @@ namespace DotNetChatReactApp
           );
 
             app.UseAuthorization();
-            app.UseOpenApi();
+           //app.UseOpenApi();
 
-            app.UseSwaggerUi3();
+            // app.UseSwaggerUi3();
             app.UseSpaStaticFiles();
 
             app.UseEndpoints(endpoints =>

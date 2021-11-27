@@ -19,15 +19,17 @@ namespace DotNetChatReactApp.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMessageService _messageService;
+        private readonly IChannelService _channelService;
 
 
         private readonly DataContext _context;
 
 
-        public ChannelController(IUserService userService, IMessageService messageService, DataContext context)
+        public ChannelController(IUserService userService, IMessageService messageService, DataContext context, IChannelService channelService)
         {
     
             _context = context;
+            _channelService = channelService;
             _userService = userService;
             _messageService = messageService;
 
@@ -68,20 +70,20 @@ namespace DotNetChatReactApp.Controllers
             var sessionToken = HttpContext.Request.Cookies["token"];
 
             if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
-            try
-            {
+            //try
+            //{
 
-                var channels = await _context.Channels.ToListAsync();
-                await _context.SaveChangesAsync();
-
+                var channels = await _channelService.GetAllChannels();
+            
+                Console.WriteLine(channels);
                 return Ok(channels);
 
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = $"{ex.Message}" });
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    return BadRequest(new { message = $"{ex.Message}" });
+            //}
         }
 
     }

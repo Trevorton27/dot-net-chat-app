@@ -53,7 +53,7 @@ namespace DotNetChatReactApp.Controllers
                 {
                     Id = messageDto.Id,
                     Text = messageDto.Text,
-               UserId = user.Id,
+                    UserId = user.Id,
                     ChannelId= messageDto.ChannelId,
                     Username = messageDto.Username,
                     ChannelName = messageDto.ChannelName
@@ -69,22 +69,7 @@ namespace DotNetChatReactApp.Controllers
                 return Ok(message);
 
 
-                //_messageService.Create(message);
-                //await _context.SaveChangesAsync();
-
-                //var msgResponse = new MessageDTOResponse
-                //{
-                //    Id = message.Id,
-                //    Text = message.Text,
-                //    Username = message.User.Username,
-                //    ChannelId = message.ChannelId,
-                //    CreatedAt = message.CreatedAt
-                //};
-
-                // await _hubContext.Clients.All.SendAsync("ReceiveMessage", msgResponse);
-
-
-                //return CreatedAtAction("GetMessage", new { id = msgResponse.Id });
+          
 
 
             }  
@@ -95,7 +80,7 @@ namespace DotNetChatReactApp.Controllers
 
         }
 
-        [HttpGet("getallmessages", Name = "GET")]
+        [HttpGet("getallmessages")]
         public async Task<IActionResult> GetMessages()
         {
             var sessionToken = HttpContext.Request.Cookies["token"];

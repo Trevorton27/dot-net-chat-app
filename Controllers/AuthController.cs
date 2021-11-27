@@ -13,7 +13,7 @@ namespace DotNetChatReactApp.Controllers
 {
     [ApiController]
     [Route("api")]
-    public class AuthController : Controller
+    public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly JwtService _jwtService;
@@ -78,19 +78,15 @@ namespace DotNetChatReactApp.Controllers
             }
         }
 
-        // [HttpGet("allusers")]
-        // public IActionResult GetAllUsers()
-        // {
-
-        // }
+ 
 
 
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public  IActionResult Logout()
         {
-        
-         
-            Response.Cookies.Delete("token");
+
+
+           Response.Cookies.Delete("token");
             return Ok(new
             {
                 message = "Successfully logged out."

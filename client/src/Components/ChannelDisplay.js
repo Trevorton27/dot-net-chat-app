@@ -6,35 +6,12 @@ const ChannelDisplay = ({ setSelectedChannel }) => {
   const [channels, setChannels] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
 
-  useEffect(() => {
-    getChannels();
-  }, []);
+  // useEffect(() => {
+  //   getChannels();
+  // }, []);
+
   const history = useHistory();
-  const getChannels = () => {
-    axios
-      .get('/api/channels')
-      .then((response) => {
-        const channels = response.data.channels;
-        setChannels(channels);
-        setSelectedChannel(channels[0].id);
-        console.log('channels: ', channels);
-      })
-      .catch((error) => {
-        if (error.response.status === 401 || error.response.status === 422) {
-          history.push('/login');
-          return;
-        }
-      });
-  };
 
-  const channelData = {
-    name: 'another new Channel'
-  };
-
-  const createNewChannel = () => {
-    const response = axios.post('/api/newchannel', channelData);
-    console.log('response from createNewChannel: ', response);
-  };
   return (
     <div>
       <p className='channels-title'>Channels</p>
