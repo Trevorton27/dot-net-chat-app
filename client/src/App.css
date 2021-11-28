@@ -49,9 +49,8 @@ hr.line {
   text-align: center;
 }
 
-.lobby {
-  width: 400px;
-  margin: auto;
+#channel-list {
+  background-color: #000;
 }
 
 .chat {
@@ -61,6 +60,10 @@ hr.line {
 .leave-room {
   text-align: right;
   margin-bottom: 4px;
+}
+
+#logout-button {
+  color: #fff;
 }
 
 .user-list {

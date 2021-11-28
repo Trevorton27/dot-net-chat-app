@@ -7,10 +7,17 @@ namespace DotNetChatReactApp.Dtos
 {
     public class NewChannelDto
     {
-       
-            public int Id { get; set; }
-            public string Name { get; set; }
-        public int ChannelId {  get; set; }
-        
+
+        public int Id { get; set; }
+        public string ChannelName { get; set; }
+
+
+    }
+
+    public class GetChannelsDto
+    {
+        public int Id { get; set; }
+        public string ChannelName { get; set; }
+
     }
 }

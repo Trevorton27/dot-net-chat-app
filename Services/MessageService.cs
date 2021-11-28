@@ -53,9 +53,6 @@ namespace DotNetChatReactApp.Services
             return messages;
         }
 
-        public Task<List<Message>> GetAllMessages(int userId)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }

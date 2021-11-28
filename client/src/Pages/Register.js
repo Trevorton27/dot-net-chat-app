@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 
 const Register = () => {
@@ -17,8 +17,7 @@ const Register = () => {
         password
       });
 
-      const content = await response.data;
-      console.log(content);
+      console.log(response.data);
       history.push('/login');
     } catch (error) {
       console.log('error: ', error);
@@ -56,6 +55,9 @@ const Register = () => {
       <button className='w-100 btn btn-lg btn-primary' type='submit'>
         Register
       </button>
+      <p>
+        Already registered? Login here <Link to='/login'>here</Link>
+      </p>
       <p className='mt-5 mb-3 text-muted'>&copy; 2017–2021</p>
     </form>
   );

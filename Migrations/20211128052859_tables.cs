@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DotNetChatReactApp.Migrations
 {
-    public partial class newTables : Migration
+    public partial class tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,13 +12,13 @@ namespace DotNetChatReactApp.Migrations
                 name: "Channels",
                 columns: table => new
                 {
-                    ChannelId = table.Column<int>(nullable: false)
+                    Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true)
+                    ChannelName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Channels", x => x.ChannelId);
+                    table.PrimaryKey("PK_Channels", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,18 +47,12 @@ namespace DotNetChatReactApp.Migrations
                     Username = table.Column<string>(nullable: true),
                     UserId = table.Column<int>(nullable: false),
                     Text = table.Column<string>(nullable: true),
-                    ChannelId = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false)
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    ChannelName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Messages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Messages_Channels_ChannelId",
-                        column: x => x.ChannelId,
-                        principalTable: "Channels",
-                        principalColumn: "ChannelId",
-                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Messages_Users_UserId",
                         column: x => x.UserId,
@@ -66,11 +60,6 @@ namespace DotNetChatReactApp.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Messages_ChannelId",
-                table: "Messages",
-                column: "ChannelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_UserId",
@@ -81,10 +70,10 @@ namespace DotNetChatReactApp.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Messages");
+                name: "Channels");
 
             migrationBuilder.DropTable(
-                name: "Channels");
+                name: "Messages");
 
             migrationBuilder.DropTable(
                 name: "Users");

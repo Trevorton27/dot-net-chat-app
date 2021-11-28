@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
 //import {  Redirect } from 'react-router';
 import Login from './Pages/Login';
 import './App.css';
-import Navbar from './Components/NavBar';
+import Header from './Components/Header';
 import ChatPage from './Pages/ChatPage';
 import Register from './Pages/Register';
 import axios from 'axios';
@@ -12,7 +12,6 @@ function App() {
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedChannel, setSelectedChannel] = useState('');
 
   useEffect(() => {
     getUser();
@@ -36,7 +35,7 @@ function App() {
   return (
     <div className='App'>
       <Router>
-        <Navbar
+        <Header
           userName={userName}
           setUserName={setUserName}
           setIsLoggedIn={setIsLoggedIn}
@@ -51,8 +50,6 @@ function App() {
                   userId={userId}
                   userName={userName}
                   isLoggedIn={isLoggedIn}
-                  channeld={selectedChannel}
-                  setSelectedChannel={setSelectedChannel}
                 />
               ) : (
                 <Register />

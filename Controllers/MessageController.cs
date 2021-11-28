@@ -54,11 +54,10 @@ namespace DotNetChatReactApp.Controllers
                     Id = messageDto.Id,
                     Text = messageDto.Text,
                     UserId = user.Id,
-                    ChannelId= messageDto.ChannelId,
                     Username = messageDto.Username,
                     ChannelName = messageDto.ChannelName
-           
-              
+
+
 
                 };
 
@@ -69,10 +68,10 @@ namespace DotNetChatReactApp.Controllers
                 return Ok(message);
 
 
-          
 
 
-            }  
+
+            }
             catch (Exception ex)
             {
                 return BadRequest(new { message = $"{ex.Message}" });

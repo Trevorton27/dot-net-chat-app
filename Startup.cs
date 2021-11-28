@@ -50,10 +50,10 @@ namespace DotNetChatReactApp
 
             services.AddScoped<JwtService>();
 
-            //services.AddSwaggerDocument(settings =>
-            //{
-            //    settings.Title = "ChatApp";
-            //});
+            services.AddSwaggerDocument(settings =>
+            {
+                settings.Title = "ChatApp";
+            });
 
         }
 
@@ -76,9 +76,9 @@ namespace DotNetChatReactApp
           );
 
             app.UseAuthorization();
-           //app.UseOpenApi();
+            app.UseOpenApi();
 
-            // app.UseSwaggerUi3();
+            app.UseSwaggerUi3();
             app.UseSpaStaticFiles();
 
             app.UseEndpoints(endpoints =>

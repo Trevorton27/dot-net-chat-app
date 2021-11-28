@@ -3,14 +3,15 @@ import SendMessageForm from '../Components/SendMessageForm';
 import MessageContainer from '../Components/MessageContainer';
 import ChannelDisplay from '../Components/ChannelDisplay';
 import axios from 'axios';
-import { Container, Row, Col, Nav } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
 import { HubConnectionBuilder } from '@microsoft/signalr';
 
-//import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
-
-const ChatPage = ({ isLoggedIn, userName, userId, channelId, channelName }) => {
+const ChatPage = ({ isLoggedIn, userName, userId }) => {
   const [messages, setMessages] = useState([]);
+  // const [channelId, setChannelId] = useState([]);
+  const [channel, setChannels] = useState([]);
+  const [selectedChannel, setSelectedChannel] = useState('');
 
   const getAllMessages = useCallback(async () => {
     try {
@@ -19,13 +20,12 @@ const ChatPage = ({ isLoggedIn, userName, userId, channelId, channelName }) => {
       });
 
       console.log('response from getAllMessages: ', response);
-      setMessages(response.data);
 
-      console.log('messages: ', messages);
+      setMessages(response.data);
     } catch (error) {
       console.log(error.response);
     }
-  }, [messages]);
+  }, []);
 
   useEffect(() => {
     try {
@@ -35,16 +35,18 @@ const ChatPage = ({ isLoggedIn, userName, userId, channelId, channelName }) => {
         .build();
 
       connection.start().then(() => {
-        console.log('Connected!');
+        // console.log('Connected!');
         const newMessage = {
           Username: userName,
           Text: messages,
-          UserId: userId
+          UserId: userId,
+          ChannelName: channel.name
         };
         connection.on('ReceiveMessage', (username, text) => {
           const updateChat = [...messages];
           updateChat.push(newMessage);
           getAllMessages();
+          getChannels();
           connection.onclose((e) => {
             setMessages([]);
           });
@@ -53,52 +55,45 @@ const ChatPage = ({ isLoggedIn, userName, userId, channelId, channelName }) => {
     } catch (e) {
       console.log('Connection failed: ', e);
     }
-  }, [getAllMessages, messages, userId, userName]);
+  }, [getAllMessages, messages, userId, userName, channel.name]);
 
   useEffect(() => {
     getAllMessages();
   }, [getAllMessages]);
 
-  const getChannels = () => {
-    axios
+  const getChannels = async () => {
+    await axios
       .get('/api/channels', {
         headers: { 'Content-Type': 'application/json' }
       })
       .then((response) => {
         const channels = response.data;
-        console.log('channels response: ', channels);
-        // const channels = response.data.channels;
-        // setChannels(channels);
-        // setSelectedChannel(channels[0].id);
-        // console.log('channels: ', channels);
+        console.log('getChannels response: ', channels);
+        // setChannelId(channel.id);
+        setChannels(channels);
+        setSelectedChannel(channels[0].id);
       })
       .catch((error) => {
-        console.log(error);
+        console.log('channels error: ', error);
       });
   };
 
   useEffect(() => {
     getChannels();
   }, []);
-  const sendMessage = async (
-    message,
-    userName,
-    userId,
-    channelId,
-    channelName
-  ) => {
+
+  const sendMessage = async (message, userName, userId, channel) => {
     try {
       const response = await axios.post('/api/message', {
         Username: userName,
         Text: message,
         UserId: userId,
-        ChannelId: channelId
-        // ChannelName:
+        ChannelName: channel.name
       });
       console.log('response: ', response.data);
       getAllMessages();
     } catch (error) {
-      console.log('error response: ', error.response.data);
+      console.log('error response: ', error.response);
     }
   };
 
@@ -111,11 +106,10 @@ const ChatPage = ({ isLoggedIn, userName, userId, channelId, channelName }) => {
     <Container className='message-page-container'>
       <Row>
         <div className='welcome-message'>
-          <p> Welcome to the chat page {userName}.</p>
           <br /> <p> Select a channel and enter a message to get started.</p>
         </div>{' '}
         <Col>
-          <ChannelDisplay />
+          <ChannelDisplay userName={userName} channel={channel} />
         </Col>
         <Col>
           <MessageContainer messages={messages} />

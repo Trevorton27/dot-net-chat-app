@@ -27,7 +27,7 @@ namespace DotNetChatReactApp.Controllers
 
         public ChannelController(IUserService userService, IMessageService messageService, DataContext context, IChannelService channelService)
         {
-    
+
             _context = context;
             _channelService = channelService;
             _userService = userService;
@@ -45,9 +45,10 @@ namespace DotNetChatReactApp.Controllers
             {
 
                 var newChannel = new Channel
-                {   Id= channelDto.Id,
-                    Name = channelDto.Name,
-                    ChannelId = channelDto.ChannelId
+                {
+                    Id = channelDto.Id,
+                    ChannelName = channelDto.ChannelName,
+
                 };
 
                 _context.Channels.Add(newChannel);
@@ -73,10 +74,10 @@ namespace DotNetChatReactApp.Controllers
             //try
             //{
 
-                var channels = await _channelService.GetAllChannels();
-            
-                Console.WriteLine(channels);
-                return Ok(channels);
+            var channels = await _channelService.GetAllChannels();
+
+            Console.WriteLine(channels);
+            return Ok(channels);
 
 
             //}

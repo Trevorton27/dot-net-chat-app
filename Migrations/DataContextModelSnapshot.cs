@@ -21,15 +21,15 @@ namespace DotNetChatReactApp.Migrations
 
             modelBuilder.Entity("DotNetChatReactApp.Models.Channel", b =>
                 {
-                    b.Property<int>("ChannelId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ChannelName")
                         .HasColumnType("text");
 
-                    b.HasKey("ChannelId");
+                    b.HasKey("Id");
 
                     b.ToTable("Channels");
                 });
@@ -41,8 +41,8 @@ namespace DotNetChatReactApp.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<int>("ChannelId")
-                        .HasColumnType("integer");
+                    b.Property<string>("ChannelName")
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
@@ -57,8 +57,6 @@ namespace DotNetChatReactApp.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ChannelId");
 
                     b.HasIndex("UserId");
 
@@ -94,12 +92,6 @@ namespace DotNetChatReactApp.Migrations
 
             modelBuilder.Entity("DotNetChatReactApp.Models.Message", b =>
                 {
-                    b.HasOne("DotNetChatReactApp.Models.Channel", "Channel")
-                        .WithMany()
-                        .HasForeignKey("ChannelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DotNetChatReactApp.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")

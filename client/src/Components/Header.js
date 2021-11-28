@@ -1,15 +1,22 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { Navbar } from 'react-bootstrap';
 // import NavBarLoggedOut from './NavBarLoggedOut';
 // import NavBarLoggedIn from './NavBarLoggedIn';
 
-const Navbar = ({ userName, setUserName, setIsLoggedIn }) => {
+const Header = ({ userName, setUserName, setIsLoggedIn }) => {
   const history = useHistory();
-  const logout = async () => {
-    await axios.post('api/logout', {
-      headers: { 'Content-Type': 'application/json' }
-    });
+  const logout = async (e) => {
+    e.preventDefault();
+
+    sessionStorage.removeItem('isAuthenticated');
+    setIsLoggedIn(false);
+    // history.push('/login');
+    // await axios.post('api/logout', {
+    //   headers: { 'Content-Type': 'application/json' }
+    // });
+
     setIsLoggedIn(false);
     setUserName('');
     history.push('/login');
@@ -34,22 +41,39 @@ const Navbar = ({ userName, setUserName, setIsLoggedIn }) => {
     );
   } else {
     menu = (
-      <ul>
-        <li className='nav-item'>
-          <Link
-            to='/login'
-            className='nav-link active'
-            aria-current='page'
-            onClick={logout}
+      <div>
+        <ul className='navbar-nav me-auto mb-2 mb-md-0'>
+          <li
+            style={{
+              color: '#fff',
+              textAlign: 'center',
+              margin: 'auto 0'
+            }}
           >
-            Logout
-          </Link>
-        </li>
-      </ul>
+            {' '}
+            Welcome to the chat page {userName}.
+          </li>
+          <li className='nav-item'>
+            <Link
+              to='/login'
+              className='nav-link active'
+              id='logout-button'
+              aria-current='page'
+              onClick={logout}
+              style={{ marginLeft: '33em' }}
+            >
+              Logout
+            </Link>
+          </li>
+        </ul>
+      </div>
     );
   }
   return (
-    <nav className='navbar navbar-expand-md navbar-dark bg-dark mb-4'>
+    <Navbar
+      className='navbar navbar-expand-md navbar-dark bg-dark mb-4'
+      sticky='top'
+    >
       <div className='container-fluid'>
         <Link to='/' className='navbar-brand'>
           Chat App
@@ -68,7 +92,7 @@ const Navbar = ({ userName, setUserName, setIsLoggedIn }) => {
         <div className='collapse navbar-collapse' id='navbarCollapse'></div>
         {menu}
       </div>
-    </nav>
+    </Navbar>
   );
   //if (isLoggedIn) {
   //  return <NavBarLoggedIn logout={logout} />;
@@ -76,4 +100,4 @@ const Navbar = ({ userName, setUserName, setIsLoggedIn }) => {
   //return <NavBarLoggedOut />;
 };
 
-export default Navbar;
+export default Header;
