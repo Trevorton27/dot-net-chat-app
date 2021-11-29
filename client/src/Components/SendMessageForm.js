@@ -1,14 +1,19 @@
 import { Form, Button, FormControl, InputGroup } from 'react-bootstrap';
 import { useState } from 'react';
-
-const SendMessageForm = ({ sendMessage, userName, userId, jointChat }) => {
+const SendMessageForm = ({
+  userName,
+  userId,
+  channelId,
+  sendMessage,
+  channel
+}) => {
   const [message, setMessage] = useState('');
 
   return (
     <Form
       onSubmit={(e) => {
         e.preventDefault();
-        sendMessage(message, userName, userId);
+        sendMessage(message, userName, userId, channelId, channel);
 
         setMessage('');
       }}

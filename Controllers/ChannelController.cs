@@ -71,20 +71,20 @@ namespace DotNetChatReactApp.Controllers
             var sessionToken = HttpContext.Request.Cookies["token"];
 
             if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
-            //try
-            //{
+            try
+            {
 
-            var channels = await _channelService.GetAllChannels();
+                var channels = await _channelService.GetAllChannels();
 
             Console.WriteLine(channels);
             return Ok(channels);
 
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    return BadRequest(new { message = $"{ex.Message}" });
-            //}
+        }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = $"{ex.Message}" });
+            }
         }
 
     }

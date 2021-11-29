@@ -15,9 +15,12 @@ namespace DotNetChatReactApp.Models
 
         public DateTime CreatedAt { get; set; }
 
+        public int ChannelId { get; set; }
+
         public string ChannelName { get; set; }
 
-        public User User { get; set; }
+
+
 
     }
 }

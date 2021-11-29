@@ -15,7 +15,11 @@ namespace DotNetChatReactApp.Dtos
 
         public string Username { get; set; }
 
+        public int ChannelId { get; set; }
+
         public string ChannelName { get; set; }
+
+      
 
     }
 }

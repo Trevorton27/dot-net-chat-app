@@ -11,5 +11,6 @@ namespace DotNetChatReactApp.Models
 
         public string ChannelName { get; set; }
 
+    
     }
 }

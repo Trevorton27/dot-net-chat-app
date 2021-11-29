@@ -55,7 +55,9 @@ namespace DotNetChatReactApp.Controllers
                     Text = messageDto.Text,
                     UserId = user.Id,
                     Username = messageDto.Username,
+                    ChannelId = messageDto.ChannelId,
                     ChannelName = messageDto.ChannelName
+            
 
 
 

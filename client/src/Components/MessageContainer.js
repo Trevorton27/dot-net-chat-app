@@ -13,10 +13,10 @@ const MessageContainer = ({ messages }) => {
       });
     }
   }, [messages]);
-
+  // console.log('messages in messagecontainer: ', messages);
   return (
     <div ref={messageRef} className='message-container'>
-      {messages.map((m, index) => (
+      {messages.messages.map((m, index) => (
         <div key={index} className='user-message'>
           <div className='message bg-primary'>{m.text}</div>
           <div className='from-user'>From {m.username}</div>

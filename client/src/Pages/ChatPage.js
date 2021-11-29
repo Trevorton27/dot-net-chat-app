@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import SendMessageForm from '../Components/SendMessageForm';
 import MessageContainer from '../Components/MessageContainer';
 import ChannelDisplay from '../Components/ChannelDisplay';
+import MessageDisplay from '../Components/MessageDisplay';
 import axios from 'axios';
 import { Container, Row, Col } from 'react-bootstrap';
 
@@ -9,14 +10,15 @@ import { HubConnectionBuilder } from '@microsoft/signalr';
 
 const ChatPage = ({ isLoggedIn, userName, userId }) => {
   const [messages, setMessages] = useState([]);
-  // const [channelId, setChannelId] = useState([]);
   const [channel, setChannels] = useState([]);
   const [selectedChannel, setSelectedChannel] = useState('');
+  const [channelId, setChannelId] = useState('');
 
   const getAllMessages = useCallback(async () => {
     try {
       const response = await axios.get('/api/getallmessages', {
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
+        ChannelName: channel.channelName
       });
 
       console.log('response from getAllMessages: ', response);
@@ -26,6 +28,24 @@ const ChatPage = ({ isLoggedIn, userName, userId }) => {
       console.log(error.response);
     }
   }, []);
+
+  const getChannels = useCallback(async () => {
+    await axios
+      .get('/api/channels', {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then((response) => {
+        const channels = response.data;
+        console.log('getChannels response: ', channels);
+        // setChannelId(channel.id);
+        setChannels(channels);
+        setSelectedChannel(channels[0].id);
+        console.log('selectedChannel: ', selectedChannel);
+      })
+      .catch((error) => {
+        console.log('channels error: ', error);
+      });
+  });
 
   useEffect(() => {
     try {
@@ -40,7 +60,7 @@ const ChatPage = ({ isLoggedIn, userName, userId }) => {
           Username: userName,
           Text: messages,
           UserId: userId,
-          ChannelName: channel.name
+          ChannelName: channel.channelName
         };
         connection.on('ReceiveMessage', (username, text) => {
           const updateChat = [...messages];
@@ -55,53 +75,45 @@ const ChatPage = ({ isLoggedIn, userName, userId }) => {
     } catch (e) {
       console.log('Connection failed: ', e);
     }
-  }, [getAllMessages, messages, userId, userName, channel.name]);
+  }, [
+    getAllMessages,
+    messages,
+    userId,
+    userName,
+    channel.channelName,
+    getChannels
+  ]);
 
   useEffect(() => {
     getAllMessages();
   }, [getAllMessages]);
 
-  const getChannels = async () => {
-    await axios
-      .get('/api/channels', {
-        headers: { 'Content-Type': 'application/json' }
-      })
-      .then((response) => {
-        const channels = response.data;
-        console.log('getChannels response: ', channels);
-        // setChannelId(channel.id);
-        setChannels(channels);
-        setSelectedChannel(channels[0].id);
-      })
-      .catch((error) => {
-        console.log('channels error: ', error);
-      });
-  };
-
   useEffect(() => {
     getChannels();
-  }, []);
+  }, [getChannels]);
 
-  const sendMessage = async (message, userName, userId, channel) => {
+  const sendMessage = async (message, userName, userId, channel, channelId) => {
     try {
       const response = await axios.post('/api/message', {
+        headers: { 'Content-Type': 'application/json' },
         Username: userName,
         Text: message,
         UserId: userId,
+        ChannelId: parseInt(channelId),
         ChannelName: channel.name
       });
       console.log('response: ', response.data);
       getAllMessages();
     } catch (error) {
-      console.log('error response: ', error.response);
+      console.log('error response: ', error);
     }
   };
+  //console.log('messages in chatpage: ', messages);
 
   // const createNewChannel = () => {
   //   const response = axios.post('/api/newchannel', channelData);
   //   console.log('response from createNewChannel: ', response);
   // };
-
   return isLoggedIn ? (
     <Container className='message-page-container'>
       <Row>
@@ -109,14 +121,22 @@ const ChatPage = ({ isLoggedIn, userName, userId }) => {
           <br /> <p> Select a channel and enter a message to get started.</p>
         </div>{' '}
         <Col>
-          <ChannelDisplay userName={userName} channel={channel} />
-        </Col>
-        <Col>
-          <MessageContainer messages={messages} />
-          <SendMessageForm
+          <MessageDisplay
             userId={userId}
             userName={userName}
+            channelId={channelId}
+            messages={messages}
             sendMessage={sendMessage}
+            channel={channel}
+          />
+        </Col>
+        <Col>
+          <ChannelDisplay
+            getChannels={getChannels}
+            channelId={channelId}
+            setChannelId={setChannelId}
+            userName={userName}
+            channel={channel}
           />
         </Col>
       </Row>
