@@ -36,7 +36,7 @@ namespace DotNetChatReactApp.Controllers
         }
 
         [HttpPost("newchannel")]
-        public async Task<IActionResult> CreateNewChannel([FromQuery] NewChannelDto channelDto)
+        public async Task<IActionResult> CreateNewChannel([FromBody] NewChannelDto channelDto)
         {
             var sessionToken = HttpContext.Request.Cookies["token"];
 

@@ -54,14 +54,11 @@ namespace DotNetChatReactApp.Controllers
                     Id = messageDto.Id,
                     Text = messageDto.Text,
                     UserId = user.Id,
-                    Username = messageDto.Username,
                     ChannelId = messageDto.ChannelId,
-                    ChannelName = messageDto.ChannelName
-            
-
-
-
+                    Username = messageDto.Username,
+                    ChannelName = messageDto.ChannelName,
                 };
+
 
                 _context.Messages.Add(message);
                 await _context.SaveChangesAsync();

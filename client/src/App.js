@@ -1,16 +1,22 @@
 import './App.css';
+import React, { useState } from 'react';
 import { Route, BrowserRouter } from 'react-router-dom';
-import Login from './pages/Login/Login';
-import SignUp from './pages/SignUp/SignUp';
-import Home from './pages/Home/Home';
+import Login from './components/Login';
+import Register from './components/Register';
+import ChatPage from './pages/ChatPage';
 
 function App() {
+  const [token, setToken] = useState();
   return (
     <div className='App'>
       <BrowserRouter>
-        <Route exact path='/' component={Home} />
-        <Route path='/sign-up' component={SignUp} />
-        <Route exact path='/login' component={Login} />
+        <Route exact path='/' render={() => <ChatPage token={token} />} />
+        <Route path='/sign-up' render={() => <Register />} />
+        <Route
+          exact
+          path='/login'
+          render={() => <Login setToken={setToken} token={token} />}
+        />
       </BrowserRouter>
     </div>
   );

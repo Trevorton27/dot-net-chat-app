@@ -14,7 +14,7 @@ namespace DotNetChatReactApp.Services
     public class MessageService : IMessageService
     {
         private readonly DataContext _context;
-        private readonly User _user;
+       
 
 
         public MessageService(DataContext context)

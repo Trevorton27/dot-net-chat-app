@@ -1,62 +1,74 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Card, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import moment from 'moment';
-import './MessageBoard.css';
-import jwt_decode from 'jwt-decode';
 
-const MessageBoard = ({ channelId, redirectToLogin, token }) => {
+const MessageContainer = ({
+  channelId,
+  redirectToLogin,
+  token,
+  user,
+  getUser,
+  channelName
+}) => {
   const [messages, setMessages] = useState(null);
   const [messageText, setMessageText] = useState('');
-  const [userId, setUserId] = useState(0);
+  // const [userId, setUserId] = useState(0);
 
-  const options = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  };
-
-  useEffect(() => {
-    if (token) {
-      setUserId(jwt_decode(token).sub);
-      getMessages();
-    }
-  }, [channelId, token]);
-
-  const getMessages = () => {
+  const getMessages = useCallback(async () => {
     const data = {
-      channel_id: parseInt(channelId)
+      channelId: parseInt(channelId)
     };
 
-    axios
-      .post('/api/messages', data, options)
+    await axios
+      .post('/api/getallmessages', data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
       .then((response) => {
-        setMessages(response.data.messages);
+        console.log('getMessages response: ', response);
+        setMessages(response.data);
       })
       .catch((error) => {
-        if (error.response.status === 401) {
+        if (error) {
           redirectToLogin();
           return;
         }
       });
-  };
+  }, [channelId, redirectToLogin, token]);
 
+  useEffect(() => {
+    if (token) {
+      //setUserId(jwt_decode(token).sub);
+      // getMessages();
+    }
+  }, [channelId, token, getMessages, getUser]);
   const handleChange = (event) => setMessageText(event.target.value);
 
   const handleEnter = (event) => {
     if (event.code !== 'Enter') return;
 
     const data = {
-      channel_id: channelId,
-      user_id: userId,
-      text: messageText
+      channelId: channelId,
+      userId: user.id,
+      text: messageText,
+      channelName: channelName,
+      userName: user.firstname
     };
 
-    axios.post('/api/new-message', data, options).then((response) => {
-      getMessages();
-      setMessageText('');
-      event.target.value = '';
-    });
+    axios
+      .post('/api/message', data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then((response) => {
+        console.log('post message response: ', response);
+        getMessages();
+        setMessageText('');
+        event.target.value = '';
+      });
   };
 
   const createMessageCards = () => {
@@ -66,7 +78,7 @@ const MessageBoard = ({ channelId, redirectToLogin, token }) => {
           <Card
             className={`w-50 p-0 mt-2 mx-2 card-font 
                             ${
-                              message.user.id === userId
+                              message.user.id === user.id
                                 ? 'bg-warning right'
                                 : ''
                             }`}
@@ -105,4 +117,4 @@ const MessageBoard = ({ channelId, redirectToLogin, token }) => {
   );
 };
 
-export default MessageBoard;
+export default MessageContainer;

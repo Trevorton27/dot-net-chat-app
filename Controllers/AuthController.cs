@@ -28,7 +28,8 @@ namespace DotNetChatReactApp.Controllers
 
             var user = new User
             {
-                Username = dto.Username,
+                Firstname = dto.Firstname,
+                Lastname = dto.Lastname,
                 Email = dto.Email,
                 Password = BCrypt.Net.BCrypt.HashPassword(dto.Password),
 

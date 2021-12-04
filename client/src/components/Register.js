@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Form, Button, Col, Row, Container } from 'react-bootstrap';
 import axios from 'axios';
-import { Redirect, useHistory } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
-const SignUp = () => {
+const Register = () => {
   const [validated, setValidated] = useState(false);
   const [isMatch, setIsMatch] = useState(true);
   const [firstName, setFirstName] = useState('');
@@ -22,7 +22,7 @@ const SignUp = () => {
     setConfPassword(event.target.value);
     setIsMatch(event.target.value === password);
   };
-  const history = useHistory();
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -53,7 +53,7 @@ const SignUp = () => {
         event.stopPropagation();
         setErrorMessage(result.data.error);
       } else {
-        history.push('/');
+        setRedirect(true);
       }
     });
   };
@@ -191,4 +191,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default Register;

@@ -9,7 +9,6 @@ namespace DotNetChatReactApp.Models
     {
         public int Id { get; set; }
 
-        public string Username { get; set; }
         public int UserId { get; set; }
         public string Text { get; set; }
 
@@ -18,9 +17,8 @@ namespace DotNetChatReactApp.Models
         public int ChannelId { get; set; }
 
         public string ChannelName { get; set; }
-
-
-
+        public string Username { get; set; }
 
     }
 }
+

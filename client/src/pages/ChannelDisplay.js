@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   Card,
   Button,
@@ -7,71 +7,72 @@ import {
   FormControl
 } from 'react-bootstrap';
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 
-const ChannelCard = ({ setSelected, redirectToLogin, token }) => {
+function ChannelDisplay({
+  setSelected,
+  redirectToLogin,
+  token,
+  setChannelName,
+  user,
+  getUser,
+  channelName
+}) {
   const [channels, setChannels] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [user, setUser] = useState({});
 
-  const options = {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  };
+  const getChannels = useCallback(async () => {
+    await axios
+      .get('/api/channels', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then((response) => {
+        const channels = response.data;
+        setChannels(channels);
+        setSelected(channels[0].id);
+
+        console.log('channels response: ', channels);
+      })
+      .catch((error) => {
+        if (error) {
+          console.log('error: ', error);
+          redirectToLogin();
+          return;
+        }
+      });
+  }, [setSelected, redirectToLogin, token]);
 
   useEffect(() => {
     if (token) {
       getChannels();
       getUser();
+      console.log('ChannelName: ', channelName);
     }
-  }, [token]);
-
-  const getChannels = () => {
-    axios
-      .get('/api/channels', options)
-      .then((response) => {
-        const channels = response.data.channels;
-        setChannels(channels);
-        setSelected(channels[0].id);
-      })
-      .catch((error) => {
-        if (error.response.status === 401 || error.response.status === 422) {
-          redirectToLogin();
-          return;
-        }
-      });
-  };
-
-  const getUser = () => {
-    const id = jwt_decode(token).sub;
-    axios.post('/api/user', { id: id }, options).then((response) => {
-      setUser(response.data);
-    });
-  };
-
+  }, [token, getChannels, getUser, channelName]);
   const handleAddChannel = () => setIsEditing(true);
 
-  const handleClick = (event) => setSelected(event.target.id);
+  const handleClick = (e) => setSelected(e.target.id);
 
-  const handleEnter = (event) => {
-    if (event.code !== 'Enter') return;
+  const addNewChannel = (e) => {
+    if (e.code !== 'Enter') return;
     setIsEditing(false);
 
     const data = {
-      channel: event.target.value
+      channelName: channelName
     };
 
-    axios.post('/api/channels', data, options).then((result) => {
-      if (result.data.error) {
-        setIsError(true);
-        setTimeout(() => setIsError(false), 3000);
-        return;
-      }
-      setIsError(false);
-      getChannels();
-    });
+    axios
+      .post('/api/newchannel', data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then((result) => {
+        console.log('addNewChannel result: ', result);
+        getChannels();
+      });
   };
 
   const createButtons = () => {
@@ -84,7 +85,7 @@ const ChannelCard = ({ setSelected, redirectToLogin, token }) => {
           className='channel w-100'
           onClick={handleClick}
         >
-          # {channel.name}
+          # {channel.channelName}
         </Button>
       );
     });
@@ -93,11 +94,10 @@ const ChannelCard = ({ setSelected, redirectToLogin, token }) => {
   return (
     <Card
       lg={1}
-      className=' text-center text-light border mt-3 overflow-auto'
+      className='bg-dark text-center text-light border mt-3 overflow-auto'
       style={{ height: '85vh' }}
     >
       <Card.Body className='pt-1'>
-        <Card.Text className='mb-3'>Hello {user.firstname}!</Card.Text>
         <Card.Text style={{ fontSize: '0.75em' }} className='mb-0'>
           Select a Channel:{' '}
         </Card.Text>
@@ -114,10 +114,12 @@ const ChannelCard = ({ setSelected, redirectToLogin, token }) => {
         {isEditing ? (
           <InputGroup size='sm' className='mt-2 w-75 mx-auto'>
             <FormControl
+              value={channelName}
               placeholder='Channel Name'
               aria-label='Channel Name'
               aria-describedby='basic-addon1'
-              onKeyUp={handleEnter}
+              onChange={(e) => setChannelName(e.target.value)}
+              onKeyUp={addNewChannel}
             />
           </InputGroup>
         ) : (
@@ -132,5 +134,5 @@ const ChannelCard = ({ setSelected, redirectToLogin, token }) => {
       </Card.Body>
     </Card>
   );
-};
-export default ChannelCard;
+}
+export default ChannelDisplay;
