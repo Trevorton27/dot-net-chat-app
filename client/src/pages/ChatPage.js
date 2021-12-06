@@ -1,15 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import ChannelDisplay from './ChannelDisplay';
-import MessageContainer from './MessageContainer';
 import Header from '../components/Header';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import { HubConnectionBuilder } from '@microsoft/signalr';
 import axios from 'axios';
-import SendMessageForm from '../components/SendMessageForm';
 
 const ChatPage = ({ token }) => {
-  const [selectedChannel, setSelectedChannel] = useState('');
   const [channelId, setChannelId] = useState();
   const [user, setUser] = useState('');
   const [channelName, setChannelName] = useState('');
@@ -87,6 +84,20 @@ const ChatPage = ({ token }) => {
     }
   }, [getAllMessages, messages, user.firstname, user.id]);
 
+  const sendMessage = async (message, user) => {
+    try {
+      const response = await axios.post('/api/message', {
+        Username: user.firstname,
+        Text: message,
+        UserId: user.id
+      });
+      console.log('response: ', response.data);
+      getAllMessages();
+    } catch (error) {
+      console.log('error response: ', error.response.data);
+    }
+  };
+
   return redirect ? (
     <Redirect to='/login' />
   ) : (
@@ -102,6 +113,7 @@ const ChatPage = ({ token }) => {
       <Row>
         <Col lg={10}>
           <ChannelDisplay
+            classname='bg-dark'
             setChannelId={setChannelId}
             redirectToLogin={redirectToLogin}
             token={token}
@@ -110,6 +122,7 @@ const ChatPage = ({ token }) => {
             setChannelName={setChannelName}
             channelName={channelName}
             messages={messages}
+            sendMessage={sendMessage}
           />
         </Col>
       </Row>
