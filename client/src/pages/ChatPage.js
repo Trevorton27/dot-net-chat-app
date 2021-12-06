@@ -1,25 +1,31 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import ChannelDisplay from './ChannelDisplay';
 import MessageContainer from './MessageContainer';
-import { Container, Row, Col, Nav } from 'react-bootstrap';
+import Header from '../components/Header';
+import { Container, Row, Col } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 import axios from 'axios';
+import SendMessageForm from '../components/SendMessageForm';
 
 const ChatPage = ({ token }) => {
   const [selectedChannel, setSelectedChannel] = useState('');
-  const [redirect, setRedirect] = useState(false);
+  const [channelId, setChannelId] = useState();
   const [user, setUser] = useState('');
   const [channelName, setChannelName] = useState('');
+  const [redirect, setRedirect] = useState(false);
+  const [messages, setMessages] = useState([]);
+
   useEffect(() => {
     if (!token) {
       setRedirect(true);
     }
   }, [token]);
 
-  const redirectToLogin = () => {
+  const redirectToLogin = useCallback(() => {
     sessionStorage.removeItem('token');
     setRedirect(true);
-  };
+  }, []);
 
   const getUser = useCallback(async () => {
     const response = await axios.get('api/user', {
@@ -33,43 +39,77 @@ const ChatPage = ({ token }) => {
     }
   }, [token]);
 
+  const getAllMessages = useCallback(async () => {
+    const data = {
+      channelId: parseInt(channelId)
+    };
+
+    await axios
+      .post('/api/getallmessages', data, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+      .then((response) => {
+        console.log('getMessages response: ', response);
+        setMessages(response.data);
+      })
+      .catch((error) => {
+        if (error) {
+          redirectToLogin();
+          return;
+        }
+      });
+  }, [channelId, redirectToLogin, token]);
+
+  useEffect(() => {
+    try {
+      const connection = new HubConnectionBuilder()
+        .withUrl('hubs/chat')
+        .withAutomaticReconnect()
+        .build();
+
+      connection.start().then(() => {
+        console.log('Connected!');
+        const newMessage = {
+          Username: user.firstname,
+          Text: messages,
+          UserId: user.id
+        };
+        connection.on('ReceiveMessage', (username, text) => {
+          const updateChat = [...messages];
+          updateChat.push(newMessage);
+          getAllMessages();
+        });
+      });
+    } catch (e) {
+      console.log('Connection failed: ', e);
+    }
+  }, [getAllMessages, messages, user.firstname, user.id]);
+
   return redirect ? (
     <Redirect to='/login' />
   ) : (
     <Container lg={2} fluid>
       <Row>
-        <Nav className='bg-dark border border-light'>
-          <Nav.Item>
-            <Nav.Link className='text-light' onClick={redirectToLogin}>
-              Logout
-            </Nav.Link>
-          </Nav.Item>
-          <p style={{ color: '#fff', paddingTop: '.5em', marginLeft: '40em' }}>
-            {' '}
-            Welcome {user.firstname}
-          </p>
-        </Nav>
+        <Header
+          token={token}
+          setUser={setUser}
+          user={user}
+          setRedirect={setRedirect}
+        />
       </Row>
       <Row>
         <Col lg={10}>
-          <MessageContainer
-            channelId={selectedChannel}
-            redirectToLogin={redirectToLogin}
-            token={token}
-            getUser={getUser}
-            user={user}
-            channelName={channelName}
-          />
-        </Col>
-        <Col>
           <ChannelDisplay
-            setSelected={setSelectedChannel}
+            setChannelId={setChannelId}
             redirectToLogin={redirectToLogin}
             token={token}
             getUser={getUser}
             user={user}
             setChannelName={setChannelName}
             channelName={channelName}
+            messages={messages}
           />
         </Col>
       </Row>

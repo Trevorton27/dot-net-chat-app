@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Col, Row, Container, Image } from 'react-bootstrap';
+import { Form, Button, Col, Row, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import axios from 'axios';
@@ -9,7 +9,7 @@ const Login = ({ token, setToken }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
-  const [reroute, setReroute] = useState(false);
+  //  const [reroute, setReroute] = useState(false);
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -28,12 +28,12 @@ const Login = ({ token, setToken }) => {
     axios.post('/api/login', user).then((response) => {
       sessionStorage.setItem('token', response.data);
       setToken(sessionStorage.getItem('token'));
-      setReroute(true);
+
       console.log('login response: ', response);
     });
   };
   console.log('token: ', token);
-  if (token || reroute) {
+  if (token) {
     return <Redirect to='/' />;
   }
 
