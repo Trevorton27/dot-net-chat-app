@@ -8,7 +8,7 @@ const SendMessageForm = ({ sendMessage, user }) => {
     <Form
       onSubmit={(e) => {
         e.preventDefault();
-        sendMessage(message, user.firstname, user.id);
+        sendMessage(message, user);
 
         setMessage('');
       }}

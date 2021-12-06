@@ -1,10 +1,19 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import MessageField from './MessageField';
-import { Nav, NavItem, NavLink, TabContent } from 'reactstrap';
+import MessageContainer from './MessageContainer';
+import SendMessageForm from '../components/SendMessageForm';
+import {
+  Nav,
+  NavItem,
+  NavLink,
+  TabContent,
+  Col,
+  Row,
+  TabPane
+} from 'reactstrap';
 import axios from 'axios';
 
 const ShowChannels = ({
-  user,
+  messages,
   setChannelId,
   token,
   redirectToLogin,
@@ -67,11 +76,39 @@ const ShowChannels = ({
       </Nav>
 
       <TabContent>
-        <MessageField
-          sendMessage={sendMessage}
-          user={user}
-          channels={channels}
-        />
+        {channels.map((channel) => {
+          return (
+            <TabPane key={channel.id} tabId={`${channel.id}`}>
+              <Row className={'channel__row'}>
+                <Col sm='12' className='channel__col'>
+                  {() => {
+                    return (
+                      <MessageContainer
+                        messages={messages}
+                        className='bg-dark'
+                      />
+                      // <DisplayMessage
+                      //   msg={message}
+                      //   channelName={channel.name}
+                      //   currentUser={this.props.currentUser}
+                      //   deleteMessage={this.props.deleteMessage}
+                      //   selectMessageToEdit={this.selectMessageToEdit}
+                      // ></DisplayMessage>
+                    );
+                  }}
+                  <SendMessageForm sendMessage={sendMessage} />
+                </Col>
+              </Row>
+
+              {/* <InputMessage
+                handleMessageChange={this.handleMessageChange}
+                handleSendMessage={this.handleSendMessage}
+                messageText={this.state.messageText}
+                channelName={channel.name}
+              /> */}
+            </TabPane>
+          );
+        })}
       </TabContent>
     </>
   );

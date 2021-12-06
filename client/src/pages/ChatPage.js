@@ -87,14 +87,15 @@ const ChatPage = ({ token }) => {
   const sendMessage = async (message, user) => {
     try {
       const response = await axios.post('/api/message', {
-        Username: user.firstname,
-        Text: message,
-        UserId: user.id
+        channelId: channelId,
+        userId: user.id,
+        text: message,
+        userName: user.firstname
       });
       console.log('response: ', response.data);
       getAllMessages();
     } catch (error) {
-      console.log('error response: ', error.response.data);
+      console.log('error response: ', error.response);
     }
   };
 
@@ -111,6 +112,7 @@ const ChatPage = ({ token }) => {
         />
       </Row>
       <Row>
+        <h4 style={{ textAlign: 'center' }}>Channels</h4>
         <Col lg={10}>
           <ChannelDisplay
             classname='bg-dark'
@@ -123,6 +125,7 @@ const ChatPage = ({ token }) => {
             channelName={channelName}
             messages={messages}
             sendMessage={sendMessage}
+            channelId={channelId}
           />
         </Col>
       </Row>

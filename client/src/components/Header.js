@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Nav } from 'react-bootstrap';
+import { Navbar, Container, Nav } from 'react-bootstrap';
 import { useHistory, Redirect } from 'react-router-dom';
 
 const Header = ({ user, setUser, token, setRedirect }) => {
@@ -20,17 +20,20 @@ const Header = ({ user, setUser, token, setRedirect }) => {
   //   }, [token]);
 
   return (
-    <Nav className='bg-dark border border-light'>
-      <Nav.Item>
-        <Nav.Link className='text-light' onClick={logOut}>
-          Logout
-        </Nav.Link>
-      </Nav.Item>
-      <p style={{ color: '#fff', paddingTop: '.5em', marginLeft: '40em' }}>
-        {' '}
-        Welcome {user.firstname}
-      </p>
-    </Nav>
+    <Navbar bg='dark' expand='lg'>
+      <Container>
+        <Navbar.Brand href='#home' style={{ color: '#fff' }}>
+          Welcome {user.firstname}
+        </Navbar.Brand>
+        <Navbar.Toggle />
+        <Navbar.Collapse id='basic-navbar-nav'>
+          <Nav className='me-auto'></Nav>
+          <Nav.Link style={{ color: '#fff' }} onClick={logOut}>
+            Logout
+          </Nav.Link>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 
