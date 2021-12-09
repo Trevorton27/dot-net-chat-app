@@ -53,6 +53,9 @@ namespace DotNetChatReactApp.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Username")
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
                     b.ToTable("Messages");

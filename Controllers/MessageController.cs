@@ -12,6 +12,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.SignalR;
 using DotNetChatReactApp.Hubs;
 using static DotNetChatReactApp.Hubs.ChatHub;
+using Microsoft.EntityFrameworkCore;
 
 namespace DotNetChatReactApp.Controllers
 {
@@ -56,7 +57,6 @@ namespace DotNetChatReactApp.Controllers
                     UserId = user.Id,
                     ChannelId = messageDto.ChannelId,
                     Username = messageDto.Username,
-                    ChannelName = messageDto.ChannelName,
                 };
 
 
@@ -76,6 +76,43 @@ namespace DotNetChatReactApp.Controllers
                 return BadRequest(new { message = $"{ex.Message}" });
             }
 
+        }
+
+        [HttpGet("getmessagesbychannel")]
+        public async Task<IActionResult> GetMessagesByChannel([FromQuery] GetMessagesDto getMessagesDto)
+        {
+            var sessionToken = HttpContext.Request.Cookies["token"];
+            if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
+
+            try
+            {
+               
+                
+                var user = _userService.GetById(getMessagesDto.UserId);
+                var messages = await _context.Messages
+                    .Include(m => m.UserId)
+                    .ToDictionaryAsync(
+                    m => m.Id,
+                    m =>
+                    {
+                        return new GetMessagesDto
+                        {
+                            Id = m.Id,
+                            ChannelId = m.ChannelId,
+                            Username = m.Username,
+                            Text = m.Text,
+                            UserId = m.UserId
+                        };
+                    }
+                    );
+                    Console.WriteLine(messages);
+                return Ok(messages);
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = $"{ex.Message}" });
+            }
         }
 
         [HttpGet("getallmessages")]

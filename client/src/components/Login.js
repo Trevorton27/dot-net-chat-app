@@ -87,7 +87,7 @@ const Login = ({ token, setToken }) => {
                   type='submit'
                   className='bg-dark mx-1 mt-3 px-4'
                 >
-                  Sign Up
+                  Register
                 </Button>
               </Row>
             </Form>

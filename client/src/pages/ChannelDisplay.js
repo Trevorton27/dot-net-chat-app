@@ -18,10 +18,10 @@ const ChannelDisplay = ({
   token,
   user,
   getUser,
-  sendMessage,
   messages,
   setChannelId,
-  channelId
+  channelId,
+  getAllMessages
 }) => {
   const [channels, setChannels] = useState([]);
 
@@ -53,10 +53,24 @@ const ChannelDisplay = ({
     if (token) {
       getChannels();
       getUser();
-      console.log('ChannelName: ', channels.channelName);
     }
   }, [token, getChannels, getUser, channels.channelName]);
 
+  const sendMessage = async (message, user) => {
+    console.log('sendMessage fired.');
+    try {
+      const response = await axios.post('/api/message', {
+        channelId: channelId,
+        userId: user.id,
+        text: message,
+        userName: user.firstname
+      });
+      console.log('sendeMessage response: ', response.data);
+      getAllMessages();
+    } catch (error) {
+      console.log('error response: ', error);
+    }
+  };
   return (
     <div style={{ textAlign: 'center' }}>
       <Nav tabs>
@@ -87,11 +101,19 @@ const ChannelDisplay = ({
             <Row className={'channel__row'}>
               <Col sm='12' className='channel__col'>
                 <>
-                  <MessageContainer messages={messages} className='bg-dark' />
+                  <MessageContainer
+                    getAllMessages={getAllMessages}
+                    messages={messages}
+                    className='bg-dark'
+                  />
                 </>
               </Col>
             </Row>
-            <SendMessageForm channelId={channelId} sendMessage={sendMessage} />
+            <SendMessageForm
+              user={user}
+              channelId={channelId}
+              sendMessage={sendMessage}
+            />
           </TabPane>
         ))}
       </TabContent>

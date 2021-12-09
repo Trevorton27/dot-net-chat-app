@@ -179,7 +179,7 @@ const Register = () => {
                     type='submit'
                     className='mt-lg-5 mt-4 w-50'
                   >
-                    Sign Up
+                    Register
                   </Button>
                 </Col>
               </Form.Group>

@@ -18,7 +18,7 @@ const ChatPage = ({ token }) => {
       setRedirect(true);
     }
   }, [token]);
-
+  console.log('user in ChatPage: ', user);
   const redirectToLogin = useCallback(() => {
     sessionStorage.removeItem('token');
     setRedirect(true);
@@ -37,27 +37,23 @@ const ChatPage = ({ token }) => {
   }, [token]);
 
   const getAllMessages = useCallback(async () => {
-    const data = {
-      channelId: parseInt(channelId)
-    };
-
+    console.log('channelId in getAllMessages: ', channelId);
     await axios
-      .post('/api/getallmessages', data, {
+      .get('/api/getmessagesbychannel', {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
       .then((response) => {
         console.log('getMessages response: ', response);
-        setMessages(response.data);
+        // setMessages(response.data);
       })
       .catch((error) => {
         if (error) {
-          redirectToLogin();
-          return;
+          console.log('error in getAllMessages: ', error);
         }
       });
-  }, [channelId, redirectToLogin, token]);
+  }, [channelId, token]);
 
   useEffect(() => {
     try {
@@ -84,21 +80,6 @@ const ChatPage = ({ token }) => {
     }
   }, [getAllMessages, messages, user.firstname, user.id]);
 
-  const sendMessage = async (message, user) => {
-    try {
-      const response = await axios.post('/api/message', {
-        channelId: channelId,
-        userId: user.id,
-        text: message,
-        userName: user.firstname
-      });
-      console.log('response: ', response.data);
-      getAllMessages();
-    } catch (error) {
-      console.log('error response: ', error.response);
-    }
-  };
-
   return redirect ? (
     <Redirect to='/login' />
   ) : (
@@ -124,8 +105,8 @@ const ChatPage = ({ token }) => {
             setChannelName={setChannelName}
             channelName={channelName}
             messages={messages}
-            sendMessage={sendMessage}
             channelId={channelId}
+            getAllMessages={getAllMessages}
           />
         </Col>
       </Row>

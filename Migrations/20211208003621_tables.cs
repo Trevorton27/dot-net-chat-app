@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DotNetChatReactApp.Migrations
 {
-    public partial class tablesNew : Migration
+    public partial class tables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -30,7 +30,8 @@ namespace DotNetChatReactApp.Migrations
                     UserId = table.Column<int>(nullable: false),
                     Text = table.Column<string>(nullable: true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    ChannelId = table.Column<int>(nullable: false)
+                    ChannelId = table.Column<int>(nullable: false),
+                    Username = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
