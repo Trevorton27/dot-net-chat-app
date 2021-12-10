@@ -52,10 +52,10 @@ namespace DotNetChatReactApp.Controllers
 
             var jwt = _jwtService.Generate(user.Id);
 
-            //Response.Cookies.Append("token", jwt, new CookieOptions
-            //{
-            //    HttpOnly = true
-            //});
+            Response.Cookies.Append("token", jwt, new CookieOptions
+            {
+                HttpOnly = true
+            });
             return Ok(jwt);
         }
 
