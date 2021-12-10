@@ -1,4 +1,5 @@
-﻿using DotNetChatReactApp.Models;
+﻿using DotNetChatReactApp.Dtos;
+using DotNetChatReactApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace DotNetChatReactApp.Hubs
     {
 
         Task ReceiveMessage(Message message);
-
+        Task ReceiveMessage(Dictionary<int, GetMessagesDto> messages);
     }
 }

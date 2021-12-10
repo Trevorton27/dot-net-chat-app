@@ -16,7 +16,7 @@ namespace DotNetChatReactApp.Models
 
         public int ChannelId { get; set; }
 
-
+        public User User { get; set; }
         public string Username { get; set; }
 
     }

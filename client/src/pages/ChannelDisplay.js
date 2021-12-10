@@ -20,8 +20,8 @@ const ChannelDisplay = ({
   getUser,
   messages,
   setChannelId,
-  channelId,
-  getAllMessages
+  channelId
+  //getAllMessages
 }) => {
   const [channels, setChannels] = useState([]);
 
@@ -66,7 +66,7 @@ const ChannelDisplay = ({
         userName: user.firstname
       });
       console.log('sendeMessage response: ', response.data);
-      getAllMessages();
+      //  getAllMessages();
     } catch (error) {
       console.log('error response: ', error);
     }
@@ -102,7 +102,7 @@ const ChannelDisplay = ({
               <Col sm='12' className='channel__col'>
                 <>
                   <MessageContainer
-                    getAllMessages={getAllMessages}
+                    // getAllMessages={getAllMessages}
                     messages={messages}
                     className='bg-dark'
                   />

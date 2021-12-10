@@ -32,6 +32,7 @@ const ChatPage = ({ token }) => {
     if (token) {
       const responseData = await response.data;
       console.log('userData: ', responseData);
+      console.log('token: ', token);
       setUser(responseData);
     }
   }, [token]);
@@ -106,7 +107,7 @@ const ChatPage = ({ token }) => {
             channelName={channelName}
             messages={messages}
             channelId={channelId}
-            getAllMessages={getAllMessages}
+            // getAllMessages={getAllMessages}
           />
         </Col>
       </Row>

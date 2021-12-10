@@ -8,15 +8,15 @@ const MessageContainer = ({
   channelId,
   token,
   getUser,
-  messages,
-  getAllMessages
+  messages
+  // getAllMessages
 }) => {
-  useEffect(() => {
-    if (token) {
-      //setUserId(jwt_decode(token).sub);
-      getAllMessages();
-    }
-  }, [channelId, token, getAllMessages, getUser]);
+  // useEffect(() => {
+  //   if (token) {
+  //     //setUserId(jwt_decode(token).sub);
+  //     getAllMessages();
+  //   }
+  // }, [channelId, token, getAllMessages, getUser]);
 
   const messageRef = useRef();
 
