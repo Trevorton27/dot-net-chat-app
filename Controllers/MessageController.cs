@@ -26,11 +26,10 @@ namespace DotNetChatReactApp.Controllers
         private readonly DataContext _context;
 
 
-        private readonly IHubContext<ChatHub, IChatHub> _hubContext;
 
-        public MessageController(IUserService userService, IMessageService messageService, DataContext context, IHubContext<ChatHub, IChatHub> hubContext)
+        public MessageController(IUserService userService, IMessageService messageService, DataContext context)
         {
-            _hubContext = hubContext;
+           
             _context = context;
             _userService = userService;
             _messageService = messageService;
@@ -62,7 +61,7 @@ namespace DotNetChatReactApp.Controllers
 
                 _context.Messages.Add(message);
                 await _context.SaveChangesAsync();
-                await _hubContext.Clients.All.ReceiveMessage(message);
+        
 
                 return Ok(message);
 
@@ -80,7 +79,7 @@ namespace DotNetChatReactApp.Controllers
      
 
        [HttpGet("getmessagesbychannel")]
-        public async Task<IActionResult> GetMessagesByChannel( GetMessagesDto getMessagesDto)
+        public IActionResult GetMessagesByChannel([FromBody]  GetMessagesDto getMessagesDto)
         {
             var sessionToken = HttpContext.Request.Cookies["token"];
             if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
@@ -90,7 +89,7 @@ namespace DotNetChatReactApp.Controllers
                
                 
                var user = _userService.GetById(getMessagesDto.UserId);
-                var messages = await _context.Messages
+                var messages =  _context.Messages
                     .Include(m => m.User)
                     .ToDictionaryAsync(
                     m => m.Id,
@@ -107,7 +106,7 @@ namespace DotNetChatReactApp.Controllers
                     }
                     );
                     Console.WriteLine(messages);
-                await _hubContext.Clients.All.ReceiveMessage(messages);
+                
                 return Ok(messages);
 
             }
