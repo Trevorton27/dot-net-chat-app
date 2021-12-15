@@ -38,31 +38,6 @@ const ChatPage = ({ token }) => {
     }
   }, [token]);
 
-  // useEffect(() => {
-  //   try {
-  //     const connection = new HubConnectionBuilder()
-  //       .withUrl('hubs/chat')
-  //       .withAutomaticReconnect()
-  //       .build();
-
-  //     connection.start().then(() => {
-  //       console.log('Connected!');
-  //       const newMessage = {
-  //         Username: user.firstname,
-  //         Text: messages,
-  //         UserId: user.id
-  //       };
-  //       connection.on('ReceiveMessage', () => {
-  //         const updateChat = [...messages];
-  //         updateChat.push(newMessage);
-  //         getAllMessagesByChannel();
-  //       });
-  //     });
-  //   } catch (e) {
-  //     console.log('Connection failed: ', e);
-  //   }
-  // }, [getAllMessagesByChannel, messages, user.firstname, user.id]);
-
   return redirect ? (
     <Redirect to='/login' />
   ) : (

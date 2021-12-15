@@ -19,6 +19,10 @@ namespace DotNetChatReactApp.Models
         public User User { get; set; }
         public string Username { get; set; }
 
+        public static explicit operator Message(List<Message> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

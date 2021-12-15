@@ -83,7 +83,7 @@ const Login = ({ token, setToken }) => {
                   Login
                 </Button>
                 <Button
-                  href='/sign-up'
+                  href='/register'
                   type='submit'
                   className='bg-dark mx-1 mt-3 px-4'
                 >

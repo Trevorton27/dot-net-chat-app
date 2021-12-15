@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using DotNetChatReactApp.Hubs;
 using DotNetChatReactApp.Services;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using MediatR;
 
 namespace DotNetChatReactApp
 {
@@ -45,7 +46,9 @@ namespace DotNetChatReactApp
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IChannelService, ChannelService>();
-            services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+           // services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+  
+
             services.AddSignalR();
 
             services.AddScoped<JwtService>();

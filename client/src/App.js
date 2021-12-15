@@ -11,7 +11,7 @@ function App() {
     <div className='App'>
       <BrowserRouter>
         <Route exact path='/' render={() => <ChatPage token={token} />} />
-        <Route path='/sign-up' render={() => <Register />} />
+        <Route path='/register' render={() => <Register />} />
         <Route
           exact
           path='/login'

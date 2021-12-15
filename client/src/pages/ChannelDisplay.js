@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import MessageContainer from './MessageContainer';
 import SendMessageForm from '../components/SendMessageForm';
-import LoggedInUsers from '../components/LoggedInUsers';
+//import LoggedInUsers from '../components/LoggedInUsers';
 import './ChannelDisplay.css';
 import {
   Nav,
@@ -20,7 +20,6 @@ const ChannelDisplay = ({
   token,
   user,
   getUser,
-
   setChannelId,
   channelId
 }) => {
@@ -29,46 +28,18 @@ const ChannelDisplay = ({
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
 
-  const joinRoom = async (user, room) => {
-    try {
-      const connection = new HubConnectionBuilder()
-        .withUrl('hubs/chat')
-        .withAutomaticReconnect()
-        .build();
-
-      connection.on('ReceiveMessage', (user, message) => {
-        setMessages((messages) => [...messages, { user, message }]);
-      });
-
-      connection.on('UsersInRoom', (users) => {
-        setUsers(users);
-        console.log('users in room: ', users);
-      });
-
-      connection.onclose((e) => {
-        setConnection();
-        setMessages([]);
-        setUsers([]);
-      });
-      await connection.start();
-      await connection.invoke('JoinRoom', { user, room });
-      console.log('rooms: ');
-      setConnection(connection);
-    } catch (e) {
-      console.log('error: ', e);
-    }
-  };
+  console.log('users: ', users);
+  const [message, setMessage] = useState('');
 
   const sendMessage = async (message, user) => {
     try {
-      await connection.invoke('SendMessage', message);
       const response = await axios.post('/api/message', {
         channelId: channelId,
         userId: user.id,
         text: message,
         userName: user.firstname
       });
-      console.log('sendemessage response: ', response.data);
+      console.log('sendmessage response: ', response.data);
     } catch (e) {
       console.log(e);
     }
@@ -77,14 +48,14 @@ const ChannelDisplay = ({
   const getAllMessagesByChannel = useCallback(async () => {
     console.log('channelId in getAllMessagesByChannel: ', channelId);
     await axios
-      .post('/api/getmessagesbychannel', {
+      .get(`/api/getmessagesbychannel/${channelId}`, {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
         }
       })
       .then((response) => {
         console.log('getMessagesByChannel response: ', response);
-        setMessages(response.data);
       })
       .catch((error) => {
         if (error) {
@@ -93,29 +64,9 @@ const ChannelDisplay = ({
       });
   }, [channelId, token]);
 
-  // const sendMessage = async (message, user) => {
-  //   console.log('sendMessage fired.');
-  //   try {
-  //     const response = await axios.post('/api/message', {
-  //       channelId: channelId,
-  //       userId: user.id,
-  //       text: message,
-  //       userName: user.firstname
-  //     });
-  //     console.log('sendeMessage response: ', response.data);
-  //     //  getAllMessages();
-  //   } catch (error) {
-  //     console.log('error response: ', error);
-  //   }
-  // };
-
-  const closeConnection = async () => {
-    try {
-      await connection.stop();
-    } catch (e) {
-      console.log(e);
-    }
-  };
+  useEffect(() => {
+    getAllMessagesByChannel();
+  }, [getAllMessagesByChannel]);
 
   const getChannels = useCallback(async () => {
     await axios
@@ -186,11 +137,13 @@ const ChannelDisplay = ({
                     user={user}
                     channelId={channelId}
                     sendMessage={sendMessage}
+                    message={message}
+                    setMessage={setMessage}
                   />
                 </>
               </Col>
               <Col className='col-4'>
-                <LoggedInUsers users={users} />
+                {/* <LoggedInUsers users={users} /> */}
               </Col>
             </Row>
           </TabPane>

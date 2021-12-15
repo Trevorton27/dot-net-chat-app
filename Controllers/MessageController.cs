@@ -78,42 +78,45 @@ namespace DotNetChatReactApp.Controllers
         }
      
 
-       [HttpGet("getmessagesbychannel")]
-        public IActionResult GetMessagesByChannel([FromBody]  GetMessagesDto getMessagesDto)
+       [HttpGet("getmessagesbychannel/{id}")]
+        public Message GetMessagesByChannel(int channelId)
+
         {
-            var sessionToken = HttpContext.Request.Cookies["token"];
-            if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
+            return _context.Messages.First(e  => e.ChannelId == channelId);
+            //var sessionToken = HttpContext.Request.Cookies["token"];
+            //if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
 
-            try
-            {
-               
-                
-               var user = _userService.GetById(getMessagesDto.UserId);
-                var messages =  _context.Messages
-                    .Include(m => m.User)
-                    .ToDictionaryAsync(
-                    m => m.Id,
-                    m =>
-                    {
-                        return new GetMessagesDto
-                        {
-                            Id = m.Id,
-                            ChannelId = m.ChannelId,
-                            Username = m.Username,
-                            Text = m.Text,
-                            UserId = m.UserId
-                        };
-                    }
-                    );
-                    Console.WriteLine(messages);
-                
-                return Ok(messages);
+            //try
+            //{
 
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = $"{ex.Message}" });
-            }
+
+
+            //    var user = _userService.GetById(getMessagesDto.UserId);
+            //    var messages = _context.Messages
+            //        .Include(m => m.User)
+            //        .ToDictionary(
+            //        m => m.Id,
+            //        m =>
+            //        {
+            //            return new GetMessagesDto
+            //            {
+            //                Id = m.Id,
+            //                ChannelId = m.ChannelId,
+            //                Username = m.Username,
+            //                Text = m.Text,
+            //                UserId = m.UserId
+            //            };
+            //        }
+            //        );
+            //    Console.WriteLine(messages);
+
+            //    return Ok(messages);
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    return BadRequest(new { message = $"{ex.Message}" });
+            //}
         }
 
         [HttpGet("getallmessages")]
