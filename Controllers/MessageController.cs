@@ -29,7 +29,7 @@ namespace DotNetChatReactApp.Controllers
 
         public MessageController(IUserService userService, IMessageService messageService, DataContext context)
         {
-           
+
             _context = context;
             _userService = userService;
             _messageService = messageService;
@@ -61,7 +61,7 @@ namespace DotNetChatReactApp.Controllers
 
                 _context.Messages.Add(message);
                 await _context.SaveChangesAsync();
-        
+
 
                 return Ok(message);
 
@@ -76,48 +76,27 @@ namespace DotNetChatReactApp.Controllers
             }
 
         }
-     
 
-       [HttpGet("getmessagesbychannel/{id}")]
-        public Message GetMessagesByChannel(int channelId)
+
+        //[HttpGet("getmessagesbychannel/{id}")]
+        //public Message GetMessagesByChannel(int id)
+
+        //{
+        //    return _context.Messages.FirstOrDefault(e => e.ChannelId == id);
+
+        //}
+
+        [HttpGet("getmessagesbychannel/{id}")]
+        public async Task<ActionResult<List<Message>>> GetMessagesByChannelList(int id)
 
         {
-            return _context.Messages.First(e  => e.ChannelId == channelId);
-            //var sessionToken = HttpContext.Request.Cookies["token"];
-            //if (sessionToken == null) return BadRequest(new { message = "You are unauthorized" });
+            
+        return await   _context.Messages.Where(e => e.ChannelId == id).ToListAsync();
 
-            //try
-            //{
-
-
-
-            //    var user = _userService.GetById(getMessagesDto.UserId);
-            //    var messages = _context.Messages
-            //        .Include(m => m.User)
-            //        .ToDictionary(
-            //        m => m.Id,
-            //        m =>
-            //        {
-            //            return new GetMessagesDto
-            //            {
-            //                Id = m.Id,
-            //                ChannelId = m.ChannelId,
-            //                Username = m.Username,
-            //                Text = m.Text,
-            //                UserId = m.UserId
-            //            };
-            //        }
-            //        );
-            //    Console.WriteLine(messages);
-
-            //    return Ok(messages);
-
-            //}
-            //catch (Exception ex)
-            //{
-            //    return BadRequest(new { message = $"{ex.Message}" });
-            //}
         }
+
+
+
 
         [HttpGet("getallmessages")]
         public async Task<IActionResult> GetMessages()
