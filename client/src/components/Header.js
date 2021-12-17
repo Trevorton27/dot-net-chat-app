@@ -1,22 +1,21 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { useHistory, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
-const Header = ({ user, setUser, token, setRedirect }) => {
-  const history = useHistory();
+const Header = ({ user, setUser, token, setRedirect, setToken }) => {
+  // const history = useHistory();
   const logOut = () => {
     axios.post('/api/logout', {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
     });
-    sessionStorage.removeItem('token');
-    setRedirect(true);
+    setToken(sessionStorage.removeItem('token'));
     setUser('');
 
     console.log('logOut Fired!');
-
-    return history.push('/login');
+    console.log('token in logout: ', token);
+    return <Redirect to='/login' />;
   };
 
   // history.push('/login');

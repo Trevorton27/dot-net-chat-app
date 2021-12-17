@@ -46,8 +46,8 @@ namespace DotNetChatReactApp
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IChannelService, ChannelService>();
-           // services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
-  
+            // services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
+
 
             services.AddSignalR();
 
@@ -87,7 +87,7 @@ namespace DotNetChatReactApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("hubs/chat");
+                endpoints.MapHub<ChatHub>("hub/chat");
             });
 
 

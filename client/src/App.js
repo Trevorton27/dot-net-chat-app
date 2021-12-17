@@ -6,11 +6,15 @@ import Register from './components/Register';
 import ChatPage from './pages/ChatPage';
 
 function App() {
-  const [token, setToken] = useState();
+  const [token, setToken] = useState(null);
   return (
     <div className='App'>
       <BrowserRouter>
-        <Route exact path='/' render={() => <ChatPage token={token} />} />
+        <Route
+          exact
+          path='/'
+          render={() => <ChatPage setToken={token} token={token} />}
+        />
         <Route path='/register' render={() => <Register />} />
         <Route
           exact

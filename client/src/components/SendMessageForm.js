@@ -1,5 +1,5 @@
 import { Form, Button, FormControl, InputGroup } from 'react-bootstrap';
-import { useState } from 'react';
+import React from 'react';
 
 const SendMessageForm = ({ sendMessage, user, message, setMessage }) => {
   return (
@@ -7,8 +7,6 @@ const SendMessageForm = ({ sendMessage, user, message, setMessage }) => {
       onSubmit={(e) => {
         e.preventDefault();
         sendMessage(message, user);
-
-        setMessage('');
       }}
     >
       <InputGroup>

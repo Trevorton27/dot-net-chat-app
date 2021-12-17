@@ -3,6 +3,7 @@ import MessageContainer from './MessageContainer';
 import SendMessageForm from '../components/SendMessageForm';
 //import LoggedInUsers from '../components/LoggedInUsers';
 import './ChannelDisplay.css';
+import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
 import {
   Nav,
   NavItem,
@@ -13,7 +14,6 @@ import {
   TabPane
 } from 'reactstrap';
 import axios from 'axios';
-import { HubConnectionBuilder } from '@microsoft/signalr';
 
 const ChannelDisplay = ({
   redirectToLogin,
@@ -23,13 +23,21 @@ const ChannelDisplay = ({
   setChannelId,
   channelId
 }) => {
-  const [connection, setConnection] = useState();
   const [channels, setChannels] = useState([]);
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
 
   console.log('users: ', users);
   const [message, setMessage] = useState('');
+
+  const connection = new HubConnectionBuilder()
+    .withUrl('/hub/chat')
+    .configureLogging(LogLevel.Information)
+    .build();
+  connection
+    .start()
+    .then((response) => console.log('Connected', response))
+    .catch((err) => console.log(err));
 
   const sendMessage = async (message, user) => {
     try {
@@ -39,14 +47,17 @@ const ChannelDisplay = ({
         text: message,
         userName: user.firstname
       });
+      connection.on('ReceiveMessage',
       console.log('sendmessage response: ', response.data);
+      setMessage(response.data);
+      setMessage('');
     } catch (e) {
       console.log(e);
     }
   };
 
   const getAllMessagesByChannel = useCallback(async () => {
-    console.log('channelId in getAllMessagesByChannel: ', channelId);
+    // console.log('channelId in getAllMessagesByChannel: ', channelId);
     await axios
       .get(`/api/getmessagesbychannel/${channelId}`, {
         headers: {
@@ -55,7 +66,8 @@ const ChannelDisplay = ({
         }
       })
       .then((response) => {
-        console.log('getMessagesByChannel response: ', response);
+        // console.log('getMessagesByChannel response: ', response);
+        setMessages(response.data);
       })
       .catch((error) => {
         if (error) {
@@ -65,7 +77,10 @@ const ChannelDisplay = ({
   }, [channelId, token]);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     getAllMessagesByChannel();
+    return () => controller.abort();
   }, [getAllMessagesByChannel]);
 
   const getChannels = useCallback(async () => {
@@ -92,10 +107,15 @@ const ChannelDisplay = ({
   console.log('user: ', user);
 
   useEffect(() => {
+    let unmounted = false;
     if (token) {
       getChannels();
       getUser();
     }
+
+    return () => {
+      unmounted = true;
+    };
   }, [token, getChannels, getUser, channels.channelName]);
 
   return (
@@ -139,6 +159,7 @@ const ChannelDisplay = ({
                     sendMessage={sendMessage}
                     message={message}
                     setMessage={setMessage}
+                    getAllMessagesByChannel={getAllMessagesByChannel}
                   />
                 </>
               </Col>

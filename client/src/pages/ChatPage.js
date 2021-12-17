@@ -6,13 +6,12 @@ import { Redirect } from 'react-router-dom';
 
 import axios from 'axios';
 
-const ChatPage = ({ token }) => {
+const ChatPage = ({ token, setToken }) => {
   const [channelId, setChannelId] = useState();
   const [user, setUser] = useState('');
   const [channelName, setChannelName] = useState('');
   const [users, setUsers] = useState([]);
   const [redirect, setRedirect] = useState(false);
-  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     if (!token) {
@@ -45,13 +44,14 @@ const ChatPage = ({ token }) => {
       <Row>
         <Header
           token={token}
+          setToken={setToken}
           setUser={setUser}
           user={user}
           setRedirect={setRedirect}
         />
       </Row>
       <Row>
-        <h4 style={{ textAlign: 'center' }}>Channels</h4>
+        <h4 style={{ textAlign: 'center', marginTop: '2em' }}>Channels</h4>
         <Col lg={10}>
           <ChannelDisplay
             classname='bg-dark'
@@ -62,7 +62,6 @@ const ChatPage = ({ token }) => {
             user={user}
             setChannelName={setChannelName}
             channelName={channelName}
-            messages={messages}
             channelId={channelId}
           />
         </Col>
