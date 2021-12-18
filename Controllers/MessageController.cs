@@ -78,22 +78,24 @@ namespace DotNetChatReactApp.Controllers
         }
 
 
-        //[HttpGet("getmessagesbychannel/{id}")]
-        //public Message GetMessagesByChannel(int id)
+        [HttpGet("getmessagebyid/{id}")]
+        public Message GetMessagesByChannel(int id)
 
-        //{
-        //    return _context.Messages.FirstOrDefault(e => e.ChannelId == id);
+        {
+            return _context.Messages.FirstOrDefault(e => e.Id == id);
 
-        //}
+        }
 
         [HttpGet("getmessagesbychannel/{id}")]
         public async Task<ActionResult<List<Message>>> GetMessagesByChannelList(int id)
 
         {
-            
-        return await   _context.Messages.Where(e => e.ChannelId == id).ToListAsync();
+
+            return await _context.Messages.Where(e => e.ChannelId == id).ToListAsync();
 
         }
+
+
 
 
 

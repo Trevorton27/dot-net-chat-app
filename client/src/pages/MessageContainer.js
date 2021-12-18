@@ -8,16 +8,9 @@ const MessageContainer = ({
   channelId,
   token,
   getUser,
-  messages
-  // getAllMessages
+  messages,
+  returnNewMessage
 }) => {
-  // useEffect(() => {
-  //   if (token) {
-  //     //setUserId(jwt_decode(token).sub);
-  //     getAllMessages();
-  //   }
-  // }, [channelId, token, getAllMessages, getUser]);
-
   const messageRef = useRef();
 
   useEffect(() => {
@@ -29,7 +22,8 @@ const MessageContainer = ({
         behavior: 'smooth'
       });
     }
-  }, [messages]);
+    returnNewMessage();
+  }, [messages, returnNewMessage]);
 
   return (
     <>

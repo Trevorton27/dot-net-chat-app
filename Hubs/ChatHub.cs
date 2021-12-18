@@ -17,17 +17,17 @@ namespace DotNetChatReactApp.Hubs
             _connections = connections;
         }
 
-        public override Task OnDisconnectedAsync(Exception exception)
-        {
-            if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection))
-            {
-                _connections.Remove(Context.ConnectionId);
-                Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser, $"{userConnection.User} has left");
-                SendConnectedUsers(userConnection.Room);
-            }
+        // public override Task OnDisconnectedAsync(Exception exception)
+        // {
+        //     if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection))
+        //     {
+        //         _connections.Remove(Context.ConnectionId);
+        //         Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser, $"{userConnection.User} has left");
+        //         SendConnectedUsers(userConnection.Room);
+        //     }
 
-            return base.OnDisconnectedAsync(exception);
-        }
+        //     return base.OnDisconnectedAsync(exception);
+        // }
 
         public async Task SendMessage(string message)
         {
@@ -37,24 +37,24 @@ namespace DotNetChatReactApp.Hubs
             }
         }
 
-        public async Task JoinRoom(UserConnection userconnection)
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, userconnection.Room);
-            _connections[Context.ConnectionId] = userconnection;
-            await Clients.Group(userconnection.Room).SendAsync("ReceiveMessage", _botUser, $"{ userconnection.User} has joined {userconnection.Room}");
+        // public async Task JoinRoom(UserConnection userconnection)
+        // {
+        //     await Groups.AddToGroupAsync(Context.ConnectionId, userconnection.Room);
+        //     _connections[Context.ConnectionId] = userconnection;
+        //     await Clients.Group(userconnection.Room).SendAsync("ReceiveMessage", _botUser, $"{ userconnection.User} has joined {userconnection.Room}");
 
 
-            await SendConnectedUsers(userconnection.Room);
-        }
+        //     await SendConnectedUsers(userconnection.Room);
+        // }
 
-        public Task SendConnectedUsers(string room)
-        {
-            var users = _connections.Values
-                .Where(c => c.Room == room)
-                .Select(c => c.User);
+        // public Task SendConnectedUsers(string room)
+        // {
+        //     var users = _connections.Values
+        //         .Where(c => c.Room == room)
+        //         .Select(c => c.User);
 
-            return Clients.Group(room).SendAsync("UsersInRoom", users);
-        }
+        //     return Clients.Group(room).SendAsync("UsersInRoom", users);
+        // }
 
     }
 }

@@ -1,5 +1,6 @@
 import { Form, Button, FormControl, InputGroup } from 'react-bootstrap';
-import React from 'react';
+import React, { useEffect } from 'react';
+import axios from 'axios';
 
 const SendMessageForm = ({ sendMessage, user, message, setMessage }) => {
   return (

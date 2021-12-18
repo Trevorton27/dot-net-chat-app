@@ -3,7 +3,7 @@ import MessageContainer from './MessageContainer';
 import SendMessageForm from '../components/SendMessageForm';
 //import LoggedInUsers from '../components/LoggedInUsers';
 import './ChannelDisplay.css';
-import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
+//import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
 import {
   Nav,
   NavItem,
@@ -30,15 +30,6 @@ const ChannelDisplay = ({
   console.log('users: ', users);
   const [message, setMessage] = useState('');
 
-  const connection = new HubConnectionBuilder()
-    .withUrl('/hub/chat')
-    .configureLogging(LogLevel.Information)
-    .build();
-  connection
-    .start()
-    .then((response) => console.log('Connected', response))
-    .catch((err) => console.log(err));
-
   const sendMessage = async (message, user) => {
     try {
       const response = await axios.post('/api/message', {
@@ -47,7 +38,7 @@ const ChannelDisplay = ({
         text: message,
         userName: user.firstname
       });
-      connection.on('ReceiveMessage',
+      // connection.on('ReceiveMessage',
       console.log('sendmessage response: ', response.data);
       setMessage(response.data);
       setMessage('');
@@ -77,10 +68,7 @@ const ChannelDisplay = ({
   }, [channelId, token]);
 
   useEffect(() => {
-    const controller = new AbortController();
-
     getAllMessagesByChannel();
-    return () => controller.abort();
   }, [getAllMessagesByChannel]);
 
   const getChannels = useCallback(async () => {
@@ -107,17 +95,25 @@ const ChannelDisplay = ({
   console.log('user: ', user);
 
   useEffect(() => {
-    let unmounted = false;
     if (token) {
       getChannels();
       getUser();
     }
-
-    return () => {
-      unmounted = true;
-    };
   }, [token, getChannels, getUser, channels.channelName]);
 
+  const returnNewMessage = async () => {
+    await axios
+      .get(`/api/getmessagebyid/${message.id}`)
+      .then((response) =>
+        console.log('new message response: ', response.data.id)
+      );
+  };
+  useEffect(() => {
+    returnNewMessage();
+    console.log('message in sendform: ', message);
+  });
+
+  returnNewMessage();
   return (
     <div style={{ textAlign: 'center' }}>
       <Nav tabs>
@@ -149,8 +145,8 @@ const ChannelDisplay = ({
               <Col className='col-8 '>
                 <>
                   <MessageContainer
-                    // getAllMessages={getAllMessages}
                     messages={messages}
+                    returnNewMessage={returnNewMessage}
                     className='bg-dark'
                   />
                   <SendMessageForm

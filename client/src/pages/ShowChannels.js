@@ -87,13 +87,6 @@ const ShowChannels = ({
                         messages={messages}
                         className='bg-dark'
                       />
-                      // <DisplayMessage
-                      //   msg={message}
-                      //   channelName={channel.name}
-                      //   currentUser={this.props.currentUser}
-                      //   deleteMessage={this.props.deleteMessage}
-                      //   selectMessageToEdit={this.selectMessageToEdit}
-                      // ></DisplayMessage>
                     );
                   }}
                   <SendMessageForm sendMessage={sendMessage} />
