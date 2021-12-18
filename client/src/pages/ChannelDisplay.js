@@ -30,6 +30,18 @@ const ChannelDisplay = ({
   console.log('users: ', users);
   const [message, setMessage] = useState('');
 
+  const returnNewMessage = useCallback(async () => {
+    await axios.get(`/api/getmessagebyid/${message.id}`).then((response) => {
+      console.log('new message response: ', response.data);
+      const newMessage = response.data;
+      setMessages((messages) => [...messages, newMessage]);
+    });
+  }, [message.id]);
+
+  useEffect(() => {
+    returnNewMessage();
+  }, [returnNewMessage]);
+
   const sendMessage = async (message, user) => {
     try {
       const response = await axios.post('/api/message', {
@@ -82,7 +94,7 @@ const ChannelDisplay = ({
         const channels = response.data;
         setChannels(channels);
 
-        console.log('channels response: ', channels);
+        //  console.log('channels response: ', channels);
       })
       .catch((error) => {
         if (error) {
@@ -101,19 +113,12 @@ const ChannelDisplay = ({
     }
   }, [token, getChannels, getUser, channels.channelName]);
 
-  const returnNewMessage = async () => {
-    await axios
-      .get(`/api/getmessagebyid/${message.id}`)
-      .then((response) =>
-        console.log('new message response: ', response.data.id)
-      );
-  };
-  useEffect(() => {
-    returnNewMessage();
-    console.log('message in sendform: ', message);
-  });
+  // useEffect(() => {
+  //   returnNewMessage();
+  //   // console.log('message in sendform: ', message);
+  // });
 
-  returnNewMessage();
+  //returnNewMessage();
   return (
     <div style={{ textAlign: 'center' }}>
       <Nav tabs>
@@ -141,12 +146,12 @@ const ChannelDisplay = ({
         {console.log('activeTab: ', channelId)}
         {channels.map((channel) => (
           <TabPane key={channel.id} tabId={channel.id}>
-            <Row className={'channel__row'}>
+            <Row>
               <Col className='col-8 '>
                 <>
                   <MessageContainer
                     messages={messages}
-                    returnNewMessage={returnNewMessage}
+                    // returnNewMessage={returnNewMessage}
                     className='bg-dark'
                   />
                   <SendMessageForm
@@ -155,7 +160,6 @@ const ChannelDisplay = ({
                     sendMessage={sendMessage}
                     message={message}
                     setMessage={setMessage}
-                    getAllMessagesByChannel={getAllMessagesByChannel}
                   />
                 </>
               </Col>

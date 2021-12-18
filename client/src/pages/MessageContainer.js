@@ -1,18 +1,12 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Card, InputGroup, FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import moment from 'moment';
 import './MessageContainer.css';
 
-const MessageContainer = ({
-  channelId,
-  token,
-  getUser,
-  messages,
-  returnNewMessage
-}) => {
+const MessageContainer = ({ channelId, messages }) => {
   const messageRef = useRef();
-
+  // console.log('messages from messages container: ', messages);
   useEffect(() => {
     if (messageRef && messageRef.current) {
       const { scrollHeight, clientHeight } = messageRef.current;
@@ -22,8 +16,7 @@ const MessageContainer = ({
         behavior: 'smooth'
       });
     }
-    returnNewMessage();
-  }, [messages, returnNewMessage]);
+  }, [messages]);
 
   return (
     <>

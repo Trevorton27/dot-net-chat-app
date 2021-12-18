@@ -50,6 +50,7 @@ namespace DotNetChatReactApp
 
 
             services.AddSignalR();
+            services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
 
             services.AddScoped<JwtService>();
 

@@ -9,11 +9,11 @@ namespace DotNetChatReactApp.Hubs
 {
     public class ChatHub : Hub
     {
-        private readonly string _botUser;
+        // private readonly string _botUser;
         private readonly IDictionary<string, UserConnection> _connections;
         public ChatHub(IDictionary<string, UserConnection> connections)
         {
-            _botUser = "My Chat Bot";
+            //  _botUser = "My Chat Bot";
             _connections = connections;
         }
 
