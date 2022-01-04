@@ -1,9 +1,9 @@
 import React from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
-import { useHistory, Redirect } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import axios from 'axios';
 
-const Header = ({ user, setUser, token, setToken }) => {
+const Header = ({ user, setUser }) => {
   // const history = useHistory();
   const logOut = () => {
     axios
@@ -12,15 +12,12 @@ const Header = ({ user, setUser, token, setToken }) => {
         credentials: 'include'
       })
       .then(() => {
-        setToken(sessionStorage.removeItem('token'));
         setUser('');
+
+        console.log('logOut Fired!');
+
+        return <Redirect to='/login' />;
       });
-
-    // setToken();
-
-    console.log('logOut Fired!');
-    console.log('token in logout: ', token);
-    return <Redirect to='/login' />;
   };
 
   // history.push('/login');

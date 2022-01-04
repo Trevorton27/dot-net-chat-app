@@ -6,21 +6,15 @@ import { Redirect } from 'react-router-dom';
 
 import axios from 'axios';
 
-const ChatPage = ({ token, setToken }) => {
+const ChatPage = () => {
   const [channelId, setChannelId] = useState();
   const [user, setUser] = useState('');
   const [channelName, setChannelName] = useState('');
   const [users, setUsers] = useState([]);
   const [redirect, setRedirect] = useState(false);
 
-  useEffect(() => {
-    if (!token) {
-      setRedirect(true);
-    }
-  }, [token]);
   console.log('user in ChatPage: ', user);
   const redirectToLogin = useCallback(() => {
-    sessionStorage.removeItem('token');
     setRedirect(true);
   }, []);
 
@@ -29,26 +23,19 @@ const ChatPage = ({ token, setToken }) => {
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
     });
-    if (token) {
-      const responseData = await response.data;
-      console.log('userData: ', responseData);
-      console.log('token: ', token);
-      setUser(responseData);
-    }
-  }, [token]);
+
+    const responseData = await response.data;
+    console.log('userData: ', responseData);
+
+    setUser(responseData);
+  }, []);
 
   return redirect ? (
     <Redirect to='/login' />
   ) : (
     <Container lg={2} fluid>
       <Row>
-        <Header
-          token={token}
-          setToken={setToken}
-          setUser={setUser}
-          user={user}
-          setRedirect={setRedirect}
-        />
+        <Header setUser={setUser} user={user} setRedirect={setRedirect} />
       </Row>
       <Row>
         <h5
@@ -66,7 +53,6 @@ const ChatPage = ({ token, setToken }) => {
             classname='bg-dark'
             setChannelId={setChannelId}
             redirectToLogin={redirectToLogin}
-            token={token}
             getUser={getUser}
             user={user}
             setChannelName={setChannelName}

@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
-const Login = ({ token, setToken }) => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
@@ -26,16 +26,10 @@ const Login = ({ token, setToken }) => {
       password: password
     };
     axios.post('/api/login', user).then((response) => {
-      sessionStorage.setItem('token', response.data);
-      setToken(sessionStorage.getItem('token'));
-
       console.log('login response: ', response);
+      return <Redirect to='/' />;
     });
   };
-  console.log('token: ', token);
-  if (token) {
-    return <Redirect to='/' />;
-  }
 
   return (
     <div id='main' className='d-flex align-items-center h-100'>
