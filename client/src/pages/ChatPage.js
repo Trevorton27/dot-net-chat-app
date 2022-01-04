@@ -51,7 +51,16 @@ const ChatPage = ({ token, setToken }) => {
         />
       </Row>
       <Row>
-        <h4 style={{ textAlign: 'center', marginTop: '2em' }}>Channels</h4>
+        <h5
+          style={{
+            textAlign: 'left',
+            marginTop: '2em',
+            marginBottom: '2em',
+            marginLeft: '15em'
+          }}
+        >
+          Channels
+        </h5>
         <Col lg={10}>
           <ChannelDisplay
             classname='bg-dark'

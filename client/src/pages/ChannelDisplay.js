@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import MessageContainer from './MessageContainer';
 import SendMessageForm from '../components/SendMessageForm';
-//import LoggedInUsers from '../components/LoggedInUsers';
+import LoggedInUsers from '../components/LoggedInUsers';
 import './ChannelDisplay.css';
-//import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
+import * as signalR from '@microsoft/signalr';
 import {
   Nav,
   NavItem,
@@ -21,39 +21,69 @@ const ChannelDisplay = ({
   user,
   getUser,
   setChannelId,
-  channelId
+  channelId,
+  setChannelName,
+  channelName
 }) => {
   const [channels, setChannels] = useState([]);
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
+  const [connection, setConnection] = useState(null);
+  const [newMessage, setNewMessage] = useState('');
 
+  const latestChat = useRef(null);
+  latestChat.current = messages;
   console.log('users: ', users);
-  const [message, setMessage] = useState('');
 
   const returnNewMessage = useCallback(async () => {
-    await axios.get(`/api/getmessagebyid/${message.id}`).then((response) => {
+    await axios.get(`/api/getmessagebyid/${newMessage.id}`).then((response) => {
       console.log('new message response: ', response.data);
       const newMessage = response.data;
       setMessages((messages) => [...messages, newMessage]);
     });
-  }, [message.id]);
+  }, [newMessage.id]);
 
   useEffect(() => {
+    const newConnection = new signalR.HubConnectionBuilder()
+      .withUrl('hub/chat')
+      .withAutomaticReconnect()
+      .build();
+    setConnection(newConnection);
     returnNewMessage();
   }, [returnNewMessage]);
 
-  const sendMessage = async (message, user) => {
+  useEffect(() => {
+    if (connection) {
+      connection
+        .start()
+        .then(() => {
+          console.log('Good Connection');
+          connection.on('ReceiveMessage', (message) => {
+            console.log('receiving message');
+            const updatedChat = [...latestChat.current];
+            updatedChat.push(message);
+            setMessages(updatedChat);
+            // updateScroll();
+          });
+        })
+        .catch((e) => console.log('error in signalR connection: ', e));
+    }
+  }, [connection]);
+
+  const sendMessage = async () => {
+    const message = {
+      channelId: channelId,
+      userId: user.id,
+      text: newMessage,
+      userName: user.firstname,
+      channelName: channelName
+    };
     try {
-      const response = await axios.post('/api/message', {
-        channelId: channelId,
-        userId: user.id,
-        text: message,
-        userName: user.firstname
-      });
+      const response = await axios.post('/api/message', message);
       // connection.on('ReceiveMessage',
       console.log('sendmessage response: ', response.data);
-      setMessage(response.data);
-      setMessage('');
+      setNewMessage(response.data);
+      setNewMessage('');
     } catch (e) {
       console.log(e);
     }
@@ -107,47 +137,44 @@ const ChannelDisplay = ({
   console.log('user: ', user);
 
   useEffect(() => {
-    if (token) {
-      getChannels();
-      getUser();
-    }
-  }, [token, getChannels, getUser, channels.channelName]);
+    getChannels();
+    getUser();
+  }, [getUser, getChannels]);
 
-  // useEffect(() => {
-  //   returnNewMessage();
-  //   // console.log('message in sendform: ', message);
-  // });
-
-  //returnNewMessage();
   return (
-    <div style={{ textAlign: 'center' }}>
-      <Nav tabs>
-        {channels.map((channel) => {
-          //console.log('channels in channelDisplay: ', channel);
-          const toggleChannel = () => {
-            setChannelId(channel.id);
-            console.log('channel id: ', channel.id);
-          };
+    <div>
+      <Row>
+        <Col>
+          <Nav tabs>
+            {channels.map((channel) => {
+              //console.log('channels in channelDisplay: ', channel);
+              const toggleChannel = () => {
+                setChannelId(channel.id);
+                setChannelName(channel.channelName);
+                console.log('channel: ', channel);
+                console.log('channel id: ', channel.id);
+              };
 
-          return (
-            <NavItem key={channel.id}>
-              <NavLink
-                className={`${channelId === channel.id ? 'active' : ''}`}
-                id={channel.id}
-                onClick={() => toggleChannel(channel.id)}
-              >
-                {channel.channelName}
-              </NavLink>
-            </NavItem>
-          );
-        })}
-      </Nav>
-      <TabContent activeTab={channelId}>
-        {console.log('activeTab: ', channelId)}
-        {channels.map((channel) => (
-          <TabPane key={channel.id} tabId={channel.id}>
-            <Row>
-              <Col className='col-8 '>
+              return (
+                <NavItem key={channel.id}>
+                  <NavLink
+                    className={`${
+                      channelId === channel.id ? 'active' : 'not-active'
+                    }`}
+                    id={channel.id}
+                    onClick={() => toggleChannel(channel.id)}
+                    style={{ fontSize: '12px' }}
+                  >
+                    {channel.channelName}
+                  </NavLink>
+                </NavItem>
+              );
+            })}
+          </Nav>
+          <TabContent activeTab={channelId}>
+            {console.log('activeTab: ', channelId)}
+            {channels.map((channel) => (
+              <TabPane key={channel.id} tabId={channel.id}>
                 <>
                   <MessageContainer
                     messages={messages}
@@ -158,18 +185,18 @@ const ChannelDisplay = ({
                     user={user}
                     channelId={channelId}
                     sendMessage={sendMessage}
-                    message={message}
-                    setMessage={setMessage}
+                    newMessage={newMessage}
+                    setNewMessage={setNewMessage}
                   />
                 </>
-              </Col>
-              <Col className='col-4'>
-                {/* <LoggedInUsers users={users} /> */}
-              </Col>
-            </Row>
-          </TabPane>
-        ))}
-      </TabContent>
+              </TabPane>
+            ))}
+          </TabContent>
+        </Col>
+        <Col className='col-4'>
+          <LoggedInUsers users={users} />
+        </Col>
+      </Row>
     </div>
   );
 };

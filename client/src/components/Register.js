@@ -175,7 +175,7 @@ const Register = () => {
               <Form.Group as={Row}>
                 <Col className='d-flex justify-content-center'>
                   <Button
-                    variant='danger'
+                    variant='bg-dark'
                     type='submit'
                     className='mt-lg-5 mt-4 w-50'
                   >

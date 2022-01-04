@@ -49,8 +49,11 @@ namespace DotNetChatReactApp
             // services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
 
 
-            services.AddSignalR();
-            services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
+            services.AddSignalR(hubOptions =>
+         {
+             hubOptions.EnableDetailedErrors = true;
+         });
+            //services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
 
             services.AddScoped<JwtService>();
 
@@ -88,7 +91,7 @@ namespace DotNetChatReactApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("hub/chat");
+                 endpoints.MapHub<ChatHub>("hub/chat");
             });
 
 

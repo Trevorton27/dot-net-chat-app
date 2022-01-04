@@ -1,16 +1,16 @@
-.channel__row {
-  overflow: auto;
-  display: flex;
-  flex-direction: column-reverse;
-  height: 600px;
-  scrollbar-width: 4px;
-}
-
-.channel__col {
-  display: flex;
-  flex-direction: column;
-}
-
 .active {
   background: black;
+  font-weight: bold;
+}
+
+.not-active {
+  color: black;
+}
+
+.not-active:hover {
+  color: #374654;
+}
+
+.user-list {
+  text-align: center;
 }

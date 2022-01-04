@@ -19,17 +19,18 @@ const MessageContainer = ({ channelId, messages }) => {
   }, [messages]);
 
   return (
-    <>
-      <div style={{ color: '#fff' }}>{channelId}</div>
-      <div ref={messageRef} className='message-container'>
-        {messages.map((m, index) => (
-          <div key={index} className='user-message'>
-            <div className='message bg-primary'>{m.text}</div>
-            <div className='from-user'>From {m.username}</div>
-          </div>
-        ))}
-      </div>
-    </>
+    <div
+      ref={messageRef}
+      className='message-container'
+      // style={{ overflowX: 'hidden', overflowY: 'scroll' }}
+    >
+      {messages.map((m, index) => (
+        <div key={index} className='user-message'>
+          <div className='message '>{m.text}</div>
+          <div className='from-user'>From {m.username}</div>
+        </div>
+      ))}
+    </div>
   );
 };
 

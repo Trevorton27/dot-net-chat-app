@@ -3,15 +3,20 @@ import { Navbar, Container, Nav } from 'react-bootstrap';
 import { useHistory, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
-const Header = ({ user, setUser, token, setRedirect, setToken }) => {
+const Header = ({ user, setUser, token, setToken }) => {
   // const history = useHistory();
   const logOut = () => {
-    axios.post('/api/logout', {
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include'
-    });
-    setToken(sessionStorage.removeItem('token'));
-    setUser('');
+    axios
+      .post('/api/logout', {
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      })
+      .then(() => {
+        setToken(sessionStorage.removeItem('token'));
+        setUser('');
+      });
+
+    // setToken();
 
     console.log('logOut Fired!');
     console.log('token in logout: ', token);

@@ -1,60 +1,70 @@
-﻿using DotNetChatReactApp.Models;
-using Microsoft.AspNetCore.SignalR;
+﻿using DotNetChatReactApp.Data;
+using DotNetChatReactApp.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.SignalR;
+
 namespace DotNetChatReactApp.Hubs
 {
-    public class ChatHub : Hub
+    public class ChatHub : Hub<IChatHub>
     {
-        // private readonly string _botUser;
-        private readonly IDictionary<string, UserConnection> _connections;
-        public ChatHub(IDictionary<string, UserConnection> connections)
-        {
-            //  _botUser = "My Chat Bot";
-            _connections = connections;
-        }
-
-        // public override Task OnDisconnectedAsync(Exception exception)
-        // {
-        //     if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection))
-        //     {
-        //         _connections.Remove(Context.ConnectionId);
-        //         Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", _botUser, $"{userConnection.User} has left");
-        //         SendConnectedUsers(userConnection.Room);
-        //     }
-
-        //     return base.OnDisconnectedAsync(exception);
-        // }
-
-        public async Task SendMessage(string message)
-        {
-            if (_connections.TryGetValue(Context.ConnectionId, out UserConnection userConnection))
-            {
-                await Clients.Group(userConnection.Room).SendAsync("ReceiveMessage", userConnection.User, message);
-            }
-        }
-
-        // public async Task JoinRoom(UserConnection userconnection)
-        // {
-        //     await Groups.AddToGroupAsync(Context.ConnectionId, userconnection.Room);
-        //     _connections[Context.ConnectionId] = userconnection;
-        //     await Clients.Group(userconnection.Room).SendAsync("ReceiveMessage", _botUser, $"{ userconnection.User} has joined {userconnection.Room}");
-
-
-        //     await SendConnectedUsers(userconnection.Room);
-        // }
-
-        // public Task SendConnectedUsers(string room)
-        // {
-        //     var users = _connections.Values
-        //         .Where(c => c.Room == room)
-        //         .Select(c => c.User);
-
-        //     return Clients.Group(room).SendAsync("UsersInRoom", users);
-        // }
-
     }
 }
+
+//namespace DotNetChatReactApp.Hubs
+//{
+//    public class ChatHub : Hub
+//    {
+//        private readonly DataContext _context;
+
+//        public ChatHub(DataContext context)
+//        {
+//            _context = context;
+//        }
+
+//        public Task Send(Message message)
+//        {
+//            if (!_context.GroupExists(newsItem.NewsGroup))
+//            {
+//                throw new System.Exception("cannot send a news item to a group which does not exist.");
+//            }
+
+//            _context.CreateNewItem(newsItem);
+//            return Clients.Group(newsItem.NewsGroup).SendAsync("Send", newsItem);
+//        }
+
+//        public async Task JoinGroup(string groupName)
+//        {
+//            if (!_context.GroupExists(groupName))
+//            {
+//                throw new System.Exception("cannot join a group which does not exist.");
+//            }
+
+//            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+//            await Clients.Group(groupName).SendAsync("JoinGroup", groupName);
+
+//            var history = _context.GetAllNewsItems(groupName);
+//            await Clients.Client(Context.ConnectionId).SendAsync("History", history);
+//        }
+
+//        public async Task LeaveGroup(string groupName)
+//        {
+//            if (!_context.GroupExists(groupName))
+//            {
+//                throw new System.Exception("cannot leave a group which does not exist.");
+//            }
+
+//            await Clients.Group(groupName).SendAsync("LeaveGroup", groupName);
+//            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
+//        }
+//        // public async Task SendMessage(Message message)
+//        // {
+
+//        //     await Clients.All.SendAsync("ReceiveMessage", message);
+//        // }
+//    }
+//}

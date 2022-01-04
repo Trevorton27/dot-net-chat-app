@@ -11,6 +11,6 @@ namespace DotNetChatReactApp.Hubs
     {
 
         Task ReceiveMessage(Message message);
-        Task ReceiveMessage(Dictionary<int, GetMessagesDto> messages);
+       // Task ReceiveMessage(Dictionary<int, GetMessagesDto> messages);
     }
 }

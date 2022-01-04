@@ -11,7 +11,7 @@ using DotNetChatReactApp.Dtos;
 using System.Security.Claims;
 using Microsoft.AspNetCore.SignalR;
 using DotNetChatReactApp.Hubs;
-using static DotNetChatReactApp.Hubs.ChatHub;
+//using static DotNetChatReactApp.Hubs.ChatHub;
 using Microsoft.EntityFrameworkCore;
 
 namespace DotNetChatReactApp.Controllers
@@ -36,7 +36,6 @@ namespace DotNetChatReactApp.Controllers
 
         }
 
-
         [HttpPost("message")]
         public async Task<IActionResult> PostMessage([FromBody] NewMessageDto messageDto)
         {
@@ -56,6 +55,7 @@ namespace DotNetChatReactApp.Controllers
                     UserId = user.Id,
                     ChannelId = messageDto.ChannelId,
                     Username = messageDto.Username,
+                    ChannelName = messageDto.ChannelName
                 };
 
 
@@ -76,7 +76,6 @@ namespace DotNetChatReactApp.Controllers
             }
 
         }
-
 
         [HttpGet("getmessagebyid/{id}")]
         public Message GetMessagesByChannel(int id)

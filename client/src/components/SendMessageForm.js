@@ -1,24 +1,23 @@
 import { Form, Button, FormControl, InputGroup } from 'react-bootstrap';
 import React, { useEffect } from 'react';
-import axios from 'axios';
 
-const SendMessageForm = ({ sendMessage, user, message, setMessage }) => {
+const SendMessageForm = ({ sendMessage, user, newMessage, setNewMessage }) => {
   return (
     <Form
       onSubmit={(e) => {
         e.preventDefault();
-        sendMessage(message, user);
+        sendMessage(newMessage, user);
       }}
     >
       <InputGroup>
         <FormControl
           type='user'
           placeholder='message...'
-          onChange={(e) => setMessage(e.target.value)}
-          value={message}
+          onChange={(e) => setNewMessage(e.target.value)}
+          value={newMessage}
         />
 
-        <Button variant='primary' type='submit' disabled={!message}>
+        <Button variant='primary' type='submit' disabled={!newMessage}>
           Send
         </Button>
       </InputGroup>
