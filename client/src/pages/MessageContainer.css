@@ -32,5 +32,6 @@
 }
 
 .message-container {
-  overflow-y: scroll;
+  overflow: auto;
+  height: 400px;
 }

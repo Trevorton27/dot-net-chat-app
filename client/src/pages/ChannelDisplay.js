@@ -17,7 +17,7 @@ import axios from 'axios';
 
 const ChannelDisplay = ({
   redirectToLogin,
-
+  token,
   user,
   getUser,
   setChannelId,
@@ -63,7 +63,7 @@ const ChannelDisplay = ({
             const updatedChat = [...latestChat.current];
             updatedChat.push(message);
             setMessages(updatedChat);
-            // updateScroll();
+        
           });
         })
         .catch((e) => console.log('error in signalR connection: ', e));
@@ -94,6 +94,7 @@ const ChannelDisplay = ({
     await axios
       .get(`/api/getmessagesbychannel/${channelId}`, {
         headers: {
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       })
@@ -106,7 +107,7 @@ const ChannelDisplay = ({
           console.log('error in getAllMessagesByChannel: ', error);
         }
       });
-  }, [channelId]);
+  }, [channelId, token]);
 
   useEffect(() => {
     getAllMessagesByChannel();
@@ -114,7 +115,11 @@ const ChannelDisplay = ({
 
   const getChannels = useCallback(async () => {
     await axios
-      .get('/api/channels')
+      .get('/api/channels', {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
       .then((response) => {
         const channels = response.data;
         setChannels(channels);
@@ -128,7 +133,7 @@ const ChannelDisplay = ({
           return;
         }
       });
-  }, [redirectToLogin]);
+  }, [redirectToLogin, token]);
   console.log('user: ', user);
 
   useEffect(() => {
@@ -171,10 +176,10 @@ const ChannelDisplay = ({
             {channels.map((channel) => (
               <TabPane key={channel.id} tabId={channel.id}>
                 <>
-                  <MessageContainer
+                        <MessageContainer 
                     messages={messages}
                     // returnNewMessage={returnNewMessage}
-                    className='bg-dark'
+                    className=' message-container'
                   />
                   <SendMessageForm
                     user={user}
