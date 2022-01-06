@@ -3,7 +3,7 @@ import MessageContainer from './MessageContainer';
 import SendMessageForm from '../components/SendMessageForm';
 import LoggedInUsers from '../components/LoggedInUsers';
 import './ChannelDisplay.css';
-import * as signalR from '@microsoft/signalr';
+import { HubConnectionBuilder } from '@microsoft/signalr';
 import {
   Nav,
   NavItem,
@@ -28,8 +28,17 @@ const ChannelDisplay = ({
   const [channels, setChannels] = useState([]);
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
-  const [connection, setConnection] = useState(null);
+  // const [connection, setConnection] = useState(null);
   const [newMessage, setNewMessage] = useState('');
+
+  const message = {
+    UserId: user.id,
+    Text: newMessage,
+    ChannelId: channelId,
+    User: user,
+    UserName: user.firstname,
+    ChannelName: channelName
+  };
 
   const latestChat = useRef(null);
   latestChat.current = messages;
@@ -43,47 +52,66 @@ const ChannelDisplay = ({
     });
   }, [newMessage.id]);
 
-  useEffect(() => {
-    const newConnection = new signalR.HubConnectionBuilder()
-      .withUrl('hub/chat')
-      .withAutomaticReconnect()
-      .build();
-    setConnection(newConnection);
-    returnNewMessage();
-  }, [returnNewMessage]);
+  // useEffect(() => {
+  //   const newConnection = new signalR.HubConnectionBuilder()
+  //     .withUrl('hub/chat')
+  //     .withAutomaticReconnect()
+  //     .build();
+  //   setConnection(newConnection);
+  //   returnNewMessage();
+  // }, [returnNewMessage]);
 
   useEffect(() => {
-    if (connection) {
-      connection
-        .start()
-        .then(() => {
-          console.log('Good Connection');
-          connection.on('ReceiveMessage', (message) => {
-            console.log('receiving message');
-            const updatedChat = [...latestChat.current];
-            updatedChat.push(message);
-            setMessages(updatedChat);
-        
-          });
-        })
-        .catch((e) => console.log('error in signalR connection: ', e));
-    }
-  }, [connection]);
+    returnNewMessage();
+  }, [returnNewMessage]);
+  // useEffect(() => {
+  //   if (connection) {
+  //     connection
+  //       .start()
+  //       .then(() => {
+  //         console.log('Good Connection');
+  //         connection.on('ReceiveMessage', () => {
+  //           console.log('receiving message');
+  //           const updatedChat = [...messages];
+  //           updatedChat.push(message);
+  //           setMessages(updatedChat);
+  //         });
+  //       })
+  //       .catch((e) => console.log('error in signalR connection: ', e));
+  //   }
+  // }, [connection, message, messages]);
 
   const sendMessage = async () => {
     const message = {
-      channelId: channelId,
-      userId: user.id,
-      text: newMessage,
-      userName: user.firstname,
-      channelName: channelName
+      UserId: user.id,
+      Text: newMessage,
+      ChannelId: channelId,
+      User: user,
+      UserName: user.firstname,
+      ChannelName: channelName
     };
     try {
       const response = await axios.post('/api/message', message);
-      // connection.on('ReceiveMessage',
+
       console.log('sendmessage response: ', response.data);
       setNewMessage(response.data);
+
       setNewMessage('');
+
+      const connection = new HubConnectionBuilder()
+        .withUrl('hub/chat')
+        .withAutomaticReconnect()
+        .build();
+
+      connection.start().then(() => {
+        console.log('Connected!');
+
+        connection.on('ReceiveMessage', () => {
+          const updateChat = [...messages];
+          updateChat.push(message);
+          console.log('message received');
+        });
+      });
     } catch (e) {
       console.log(e);
     }
@@ -176,7 +204,7 @@ const ChannelDisplay = ({
             {channels.map((channel) => (
               <TabPane key={channel.id} tabId={channel.id}>
                 <>
-                        <MessageContainer 
+                  <MessageContainer
                     messages={messages}
                     // returnNewMessage={returnNewMessage}
                     className=' message-container'

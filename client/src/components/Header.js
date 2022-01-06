@@ -4,8 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { CgProfile } from 'react-icons/cg';
 import axios from 'axios';
 
-const Header = ({ user, setUser, token, setRedirect, setToken }) => {
-  // const history = useHistory();
+const Header = ({ user, setUser, setToken }) => {
   const logOut = () => {
     axios.post('/api/logout', {
       headers: { 'Content-Type': 'application/json' },
@@ -14,11 +13,8 @@ const Header = ({ user, setUser, token, setRedirect, setToken }) => {
     setToken(localStorage.removeItem('token'));
     setUser('');
 
-    console.log('logOut Fired!');
-    console.log('token in logout: ', token);
     return <Redirect to='/login' />;
   };
-  // history.push('/login');
 
   return (
     <Navbar bg='dark' expand='lg'>
