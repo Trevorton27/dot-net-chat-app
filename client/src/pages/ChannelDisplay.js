@@ -30,56 +30,26 @@ const ChannelDisplay = ({
   const [users, setUsers] = useState([]);
   // const [connection, setConnection] = useState(null);
   const [newMessage, setNewMessage] = useState('');
+  const connection = new HubConnectionBuilder()
+    .withUrl('hub/chat')
+    .withAutomaticReconnect()
+    .build();
+  connection
+    .start()
+    .then((response) => console.log('Connected', response))
+    .catch((err) => console.log('error: ', err));
 
-  const message = {
-    UserId: user.id,
-    Text: newMessage,
-    ChannelId: channelId,
-    User: user,
-    UserName: user.firstname,
-    ChannelName: channelName
-  };
-
-  const latestChat = useRef(null);
-  latestChat.current = messages;
-  console.log('users: ', users);
-
-  const returnNewMessage = useCallback(async () => {
-    await axios.get(`/api/getmessagebyid/${newMessage.id}`).then((response) => {
-      console.log('new message response: ', response.data);
-      const newMessage = response.data;
-      setMessages((messages) => [...messages, newMessage]);
-    });
-  }, [newMessage.id]);
+  // const returnNewMessage = useCallback(async () => {
+  //     await axios.get(`/api/getmessagebyid/${newMessage.id}`).then((response) => {
+  //         console.log('new message response: ', response.data);
+  //         const newMessage = response.data;
+  //         setMessages((messages) => [...messages, newMessage]);
+  //     });
+  // }, [newMessage.id]);
 
   // useEffect(() => {
-  //   const newConnection = new signalR.HubConnectionBuilder()
-  //     .withUrl('hub/chat')
-  //     .withAutomaticReconnect()
-  //     .build();
-  //   setConnection(newConnection);
-  //   returnNewMessage();
+  //     returnNewMessage();
   // }, [returnNewMessage]);
-
-  useEffect(() => {
-    returnNewMessage();
-  }, [returnNewMessage]);
-  // useEffect(() => {
-  //   if (connection) {
-  //     connection
-  //       .start()
-  //       .then(() => {
-  //         console.log('Good Connection');
-  //         connection.on('ReceiveMessage', () => {
-  //           console.log('receiving message');
-  //           const updatedChat = [...messages];
-  //           updatedChat.push(message);
-  //           setMessages(updatedChat);
-  //         });
-  //       })
-  //       .catch((e) => console.log('error in signalR connection: ', e));
-  //   }
-  // }, [connection, message, messages]);
 
   const sendMessage = async () => {
     const message = {
@@ -95,23 +65,9 @@ const ChannelDisplay = ({
 
       console.log('sendmessage response: ', response.data);
       setNewMessage(response.data);
+      connection.invoke('SendMessage', { message });
 
       setNewMessage('');
-
-      const connection = new HubConnectionBuilder()
-        .withUrl('hub/chat')
-        .withAutomaticReconnect()
-        .build();
-
-      connection.start().then(() => {
-        console.log('Connected!');
-
-        connection.on('ReceiveMessage', () => {
-          const updateChat = [...messages];
-          updateChat.push(message);
-          console.log('message received');
-        });
-      });
     } catch (e) {
       console.log(e);
     }
@@ -136,6 +92,37 @@ const ChannelDisplay = ({
         }
       });
   }, [channelId, token]);
+
+  const recieveMessage = useCallback((messageData) => {
+    connection.on('ReceiveMessage', () => {
+      setMessages((messages) => [...messages, messageData]);
+      console.log('message received');
+    });
+  });
+
+  useEffect(() => {
+    const message = {
+      UserId: user.id,
+      Text: newMessage,
+      ChannelId: channelId,
+      User: user,
+      UserName: user.firstname,
+      ChannelName: channelName
+    };
+    recieveMessage(message);
+    //return () => {
+    //  console.log('Cleaning Up Old Connection');
+    //  connection.stop();
+    //};
+  }, [
+    channelId,
+    channelName,
+    messages,
+    newMessage,
+    user,
+    recieveMessage,
+    connection
+  ]);
 
   useEffect(() => {
     getAllMessagesByChannel();

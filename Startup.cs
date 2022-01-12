@@ -53,7 +53,7 @@ namespace DotNetChatReactApp
          {
              hubOptions.EnableDetailedErrors = true;
          });
-            //services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
+            services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
 
             services.AddScoped<JwtService>();
 
