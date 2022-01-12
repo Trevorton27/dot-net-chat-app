@@ -36,7 +36,7 @@ const ChannelDisplay = ({
     .build();
   connection
     .start()
-    .then((response) => console.log('Connected', response))
+    .then(() => console.log('Connected'))
     .catch((err) => console.log('error: ', err));
 
   // const returnNewMessage = useCallback(async () => {
@@ -52,20 +52,20 @@ const ChannelDisplay = ({
   // }, [returnNewMessage]);
 
   const sendMessage = async () => {
-    const message = {
-      UserId: user.id,
-      Text: newMessage,
-      ChannelId: channelId,
-      User: user,
-      UserName: user.firstname,
-      ChannelName: channelName
-    };
+      const message = {
+          UserId: user.id,
+          Text: newMessage,
+          ChannelId: channelId,
+          User: user,
+          UserName: user.firstname,
+          ChannelName: channelName
+      };
     try {
       const response = await axios.post('/api/message', message);
 
       console.log('sendmessage response: ', response.data);
       setNewMessage(response.data);
-      connection.invoke('SendMessage', { message });
+        connection.invoke('SendMessage', {message});
 
       setNewMessage('');
     } catch (e) {
