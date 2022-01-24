@@ -1,23 +1,25 @@
 import { Form, Button, FormControl, InputGroup } from 'react-bootstrap';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-const SendMessageForm = ({ sendMessage, user, newMessage, setNewMessage }) => {
+const SendMessageForm = ({ sendMessage, user }) => {
+  const [message, setMessage] = useState('');
   return (
     <Form
       onSubmit={(e) => {
         e.preventDefault();
-        sendMessage(newMessage, user);
+        sendMessage(message);
+        setMessage('');
       }}
     >
       <InputGroup>
         <FormControl
           type='user'
           placeholder='message...'
-          onChange={(e) => setNewMessage(e.target.value)}
-          value={newMessage}
+          onChange={(e) => setMessage(e.target.value)}
+          value={message}
         />
 
-        <Button variant='primary' type='submit' disabled={!newMessage}>
+        <Button variant='primary' type='submit' disabled={!message}>
           Send
         </Button>
       </InputGroup>

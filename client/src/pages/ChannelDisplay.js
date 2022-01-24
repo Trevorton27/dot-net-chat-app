@@ -28,16 +28,6 @@ const ChannelDisplay = ({
   const [channels, setChannels] = useState([]);
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
-  // const [connection, setConnection] = useState(null);
-  const [newMessage, setNewMessage] = useState('');
-  const connection = new HubConnectionBuilder()
-    .withUrl('hub/chat')
-    .withAutomaticReconnect()
-    .build();
-  connection
-    .start()
-    .then(() => console.log('Connected'))
-    .catch((err) => console.log('error: ', err));
 
   // const returnNewMessage = useCallback(async () => {
   //     await axios.get(`/api/getmessagebyid/${newMessage.id}`).then((response) => {
@@ -51,23 +41,22 @@ const ChannelDisplay = ({
   //     returnNewMessage();
   // }, [returnNewMessage]);
 
-  const sendMessage = async () => {
-      const message = {
-          UserId: user.id,
-          Text: newMessage,
-          ChannelId: channelId,
-          User: user,
-          UserName: user.firstname,
-          ChannelName: channelName
-      };
+  const sendMessage = async (message) => {
+    const newMessage = {
+      UserId: user.id,
+      Text: message,
+      ChannelId: channelId,
+      User: user,
+      UserName: user.firstname,
+      ChannelName: channelName
+    };
     try {
-      const response = await axios.post('/api/message', message);
+      const response = await axios.post('/api/message', newMessage);
 
       console.log('sendmessage response: ', response.data);
-      setNewMessage(response.data);
-        connection.invoke('SendMessage', {message});
+      //setNewMessage(response.data);
 
-      setNewMessage('');
+      //setNewMessage('');
     } catch (e) {
       console.log(e);
     }
@@ -93,36 +82,65 @@ const ChannelDisplay = ({
       });
   }, [channelId, token]);
 
-  const recieveMessage = useCallback((messageData) => {
-    connection.on('ReceiveMessage', () => {
-      setMessages((messages) => [...messages, messageData]);
-      console.log('message received');
-    });
-  });
-
   useEffect(() => {
-    const message = {
-      UserId: user.id,
-      Text: newMessage,
-      ChannelId: channelId,
-      User: user,
-      UserName: user.firstname,
-      ChannelName: channelName
-    };
-    recieveMessage(message);
-    //return () => {
-    //  console.log('Cleaning Up Old Connection');
-    //  connection.stop();
-    //};
-  }, [
-    channelId,
-    channelName,
-    messages,
-    newMessage,
-    user,
-    recieveMessage,
-    connection
-  ]);
+    try {
+      const connection = new HubConnectionBuilder()
+        .withUrl('hub/chat')
+        .withAutomaticReconnect()
+        .build();
+
+      connection.start().then(() => {
+        console.log('Connected!');
+        const newMessage = {
+          UserId: user.id,
+          Text: messages,
+          ChannelId: channelId,
+          User: user,
+          UserName: user.firstname,
+          ChannelName: channelName
+        };
+        connection.on('ReceiveMessage', () => {
+          const updateChat = [...messages];
+          updateChat.push(newMessage);
+          getAllMessagesByChannel();
+          console.log('Message received!');
+        });
+      });
+    } catch (e) {
+      console.log('Connection failed: ', e);
+    }
+  }, []);
+
+  // const recieveMessage = useCallback((messageData) => {
+  //   connection.on('ReceiveMessage', () => {
+  //     setMessages((messages) => [...messages, messageData]);
+  //     console.log('message received');
+  //   });
+  // });
+
+  // useEffect(() => {
+  //   const message = {
+  //     UserId: user.id,
+  //     Text: newMessage,
+  //     ChannelId: channelId,
+  //     User: user,
+  //     UserName: user.firstname,
+  //     ChannelName: channelName
+  //   };
+  //   recieveMessage(message);
+  //   //return () => {
+  //   //  console.log('Cleaning Up Old Connection');
+  //   //  connection.stop();
+  //   //};
+  // }, [
+  //   channelId,
+  //   channelName,
+  //   messages,
+  //   newMessage,
+  //   user,
+  //   recieveMessage,
+  //   connection
+  // ]);
 
   useEffect(() => {
     getAllMessagesByChannel();
@@ -193,15 +211,12 @@ const ChannelDisplay = ({
                 <>
                   <MessageContainer
                     messages={messages}
-                    // returnNewMessage={returnNewMessage}
                     className=' message-container'
                   />
                   <SendMessageForm
                     user={user}
                     channelId={channelId}
                     sendMessage={sendMessage}
-                    newMessage={newMessage}
-                    setNewMessage={setNewMessage}
                   />
                 </>
               </TabPane>

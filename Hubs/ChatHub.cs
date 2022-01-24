@@ -10,14 +10,14 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace DotNetChatReactApp.Hubs
 {
-    public class ChatHub : Hub
+    public class ChatHub : Hub<IChatHub>
     {
 
-        public async Task SendMessage(Message message)
-        {
-             await Clients.All.SendAsync("ReceiveMessage",  message);
+        //public async Task SendMessage(Message message)
+        //{
+        //     await Clients.All.SendAsync("ReceiveMessage",  message);
             
-        }
+        //}
     }
 }
 

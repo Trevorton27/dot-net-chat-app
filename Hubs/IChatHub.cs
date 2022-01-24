@@ -6,7 +6,7 @@ namespace DotNetChatReactApp.Hubs
     public interface IChatHub
     {
 
-        Task SendMessage(Message message);
-       
+        Task ReceiveMessage(Message message);
+
     }
 }
