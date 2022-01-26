@@ -28,6 +28,34 @@ const ChannelDisplay = ({
   const [channels, setChannels] = useState([]);
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
+  useEffect(() => {
+    try {
+      const connection = new HubConnectionBuilder()
+        .withUrl('hub/chat')
+        .withAutomaticReconnect()
+        .build();
+
+      connection.start().then(() => {
+        console.log('Connected!');
+        const newMessage = {
+          UserId: user.id,
+          Text: messages,
+          ChannelId: channelId,
+          User: user,
+          UserName: user.firstname,
+          ChannelName: channelName
+        };
+        connection.on('ReceiveMessage', () => {
+          const updateChat = [...messages];
+          updateChat.push(newMessage);
+          getAllMessagesByChannel();
+          console.log('Message received!');
+        });
+      });
+    } catch (e) {
+      console.log('Connection failed: ', e);
+    }
+  }, []);
 
   // const returnNewMessage = useCallback(async () => {
   //     await axios.get(`/api/getmessagebyid/${newMessage.id}`).then((response) => {
@@ -82,34 +110,34 @@ const ChannelDisplay = ({
       });
   }, [channelId, token]);
 
-  useEffect(() => {
-    try {
-      const connection = new HubConnectionBuilder()
-        .withUrl('hub/chat')
-        .withAutomaticReconnect()
-        .build();
+  // useEffect(() => {
+  //   try {
+  //     const connection = new HubConnectionBuilder()
+  //       .withUrl('hub/chat')
+  //       .withAutomaticReconnect()
+  //       .build();
 
-      connection.start().then(() => {
-        console.log('Connected!');
-        const newMessage = {
-          UserId: user.id,
-          Text: messages,
-          ChannelId: channelId,
-          User: user,
-          UserName: user.firstname,
-          ChannelName: channelName
-        };
-        connection.on('ReceiveMessage', () => {
-          const updateChat = [...messages];
-          updateChat.push(newMessage);
-          getAllMessagesByChannel();
-          console.log('Message received!');
-        });
-      });
-    } catch (e) {
-      console.log('Connection failed: ', e);
-    }
-  }, []);
+  //     connection.start().then(() => {
+  //       console.log('Connected!');
+  //       const newMessage = {
+  //         UserId: user.id,
+  //         Text: messages,
+  //         ChannelId: channelId,
+  //         User: user,
+  //         UserName: user.firstname,
+  //         ChannelName: channelName
+  //       };
+  //       connection.on('ReceiveMessage', () => {
+  //         const updateChat = [...messages];
+  //         updateChat.push(newMessage);
+  //         getAllMessagesByChannel();
+  //         console.log('Message received!');
+  //       });
+  //     });
+  //   } catch (e) {
+  //     console.log('Connection failed: ', e);
+  //   }
+  // }, []);
 
   // const recieveMessage = useCallback((messageData) => {
   //   connection.on('ReceiveMessage', () => {
@@ -167,7 +195,7 @@ const ChannelDisplay = ({
         }
       });
   }, [redirectToLogin, token]);
-  console.log('user: ', user);
+  // console.log('user: ', user);
 
   useEffect(() => {
     getChannels();
