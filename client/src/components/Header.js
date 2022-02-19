@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Container, Nav } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
-import { CgProfile } from 'react-icons/cg';
+//import { CgProfile } from 'react-icons/cg';
 import axios from 'axios';
 
 const Header = ({ user, setUser, setToken }) => {
@@ -20,7 +20,7 @@ const Header = ({ user, setUser, setToken }) => {
     <Navbar bg='dark' expand='lg'>
       <Container>
         <Navbar.Brand href='#home' style={{ color: '#fff' }}>
-          <CgProfile size='1.5em' className='mr-1' /> Welcome {user.firstname}
+       {/*  // <CgProfile size='1.5em' className='mr-1' /> Welcome {user.firstname}*/}
         </Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse id='basic-navbar-nav'>
